@@ -3,10 +3,19 @@ import { useApp } from '../context/AppContext';
 import { Upload, RotateCw, FileText, AlertCircle, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 
 export function DocumentsScreen() {
-  const { state, getCaseDocuments, addDocument, rotateDocument, processDocument, excludeDocument } = useApp();
+  const {
+    state,
+    getCaseDocuments,
+    addDocument,
+    rotateDocument,
+    processDocument,
+    excludeDocument,
+    setDocumentRelatedDocuments
+  } = useApp();
   const [fileName, setFileName] = useState('');
   const [excludeReason, setExcludeReason] = useState('');
   const [excludingDocId, setExcludingDocId] = useState<string | null>(null);
+  const [relatedDocsById, setRelatedDocsById] = useState<Record<string, string>>({});
 
   if (!state.selectedCaseId) {
     return (
@@ -32,6 +41,17 @@ export function DocumentsScreen() {
     excludeDocument(docId, excludeReason);
     setExcludingDocId(null);
     setExcludeReason('');
+  };
+
+  const handleLinkRelatedDocs = (docId: string) => {
+    const rawValue = relatedDocsById[docId] ?? '';
+    const relatedIds = rawValue
+      .split(',')
+      .map(value => value.trim())
+      .filter(Boolean);
+
+    setDocumentRelatedDocuments(docId, relatedIds);
+    setRelatedDocsById(prev => ({ ...prev, [docId]: '' }));
   };
 
   return (
@@ -124,6 +144,7 @@ export function DocumentsScreen() {
                       <div className="flex items-center gap-3 mb-2">
                         <FileText className="w-5 h-5 text-slate-400" />
                         <span className="text-white">{doc.fileName}</span>
+                        <span className="text-xs text-slate-500">ID: {doc.id}</span>
                         <span className={`
                           px-2 py-0.5 rounded text-xs
                           ${doc.status === 'readable' ? 'bg-green-900 text-green-200' :
@@ -140,12 +161,47 @@ export function DocumentsScreen() {
                         )}
                       </div>
 
-                      {doc.extractedData && (
-                        <div className="ml-8 text-sm text-slate-400 space-y-1">
-                          <div>Vendor: {doc.extractedData.vendor}</div>
-                          <div>Date: {doc.extractedData.date}</div>
-                          <div>Amount: ${doc.extractedData.amount?.toFixed(2)} (Tax: ${doc.extractedData.taxAmount?.toFixed(2)})</div>
-                          <div>Category: {doc.extractedData.category}</div>
+                      <div className="ml-8 text-sm text-slate-400 space-y-1">
+                        {doc.extractedData ? (
+                          <>
+                            <div>Vendor: {doc.extractedData.vendor}</div>
+                            <div>Date: {doc.extractedData.date}</div>
+                            <div>Amount: ${doc.extractedData.amount?.toFixed(2)} (Tax: ${doc.extractedData.taxAmount?.toFixed(2)})</div>
+                            <div>Category: {doc.extractedData.category}</div>
+                            <div className="text-xs text-slate-500">
+                              Prototype-generated sample data.
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-xs text-slate-500">
+                            Prototype-generated sample data will appear after processing.
+                          </div>
+                        )}
+                      </div>
+
+                      {doc.relatedDocumentIds && doc.relatedDocumentIds.length > 0 && (
+                        <div className="ml-8 mt-2 text-xs text-slate-500">
+                          Supports: {doc.relatedDocumentIds.join(', ')}
+                        </div>
+                      )}
+
+                      {doc.status !== 'excluded' && (
+                        <div className="ml-8 mt-3 flex flex-col gap-2">
+                          <div className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              value={relatedDocsById[doc.id] ?? ''}
+                              onChange={e => setRelatedDocsById(prev => ({ ...prev, [doc.id]: e.target.value }))}
+                              placeholder="Related document IDs, comma-separated"
+                              className="flex-1 px-3 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm"
+                            />
+                            <button
+                              onClick={() => handleLinkRelatedDocs(doc.id)}
+                              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-sm transition-colors"
+                            >
+                              Link support
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -170,6 +226,17 @@ export function DocumentsScreen() {
                             Process
                           </button>
                         </>
+                      )}
+
+                      {doc.status !== 'excluded' && !doc.processedAt && doc.status !== 'needs-fix' && (
+                        <button
+                          onClick={() => processDocument(doc.id)}
+                          className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded flex items-center gap-2 text-sm transition-colors"
+                          title="Process document"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                          Process
+                        </button>
                       )}
 
                       {doc.status === 'readable' && excludingDocId !== doc.id && (

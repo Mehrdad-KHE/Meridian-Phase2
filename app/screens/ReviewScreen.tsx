@@ -34,6 +34,25 @@ export function ReviewScreen() {
   const pendingItems = reviewItems.filter(r => r.status === 'pending' || r.status === 'in-review');
   const selectedItem = selectedItemId ? reviewItems.find(r => r.id === selectedItemId) : pendingItems[0];
 
+  const getNextSelectedPendingItemId = (currentItemId: string) => {
+    const currentIndex = pendingItems.findIndex(item => item.id === currentItemId);
+    if (currentIndex === -1) {
+      return pendingItems[0]?.id ?? null;
+    }
+
+    const remainingItems = pendingItems.filter(item => item.id !== currentItemId);
+    if (remainingItems.length === 0) {
+      return null;
+    }
+
+    const itemImmediatelyAfter = pendingItems[currentIndex + 1];
+    if (itemImmediatelyAfter) {
+      return itemImmediatelyAfter.id;
+    }
+
+    return remainingItems[remainingItems.length - 1].id;
+  };
+
   useEffect(() => {
     if (!selectedItemId && pendingItems.length > 0) {
       setSelectedItemId(pendingItems[0].id);
@@ -56,8 +75,7 @@ export function ReviewScreen() {
       return;
     }
 
-    const nextItem = pendingItems.find(r => r.id !== selectedItem.id);
-    setSelectedItemId(nextItem?.id || null);
+    setSelectedItemId(getNextSelectedPendingItemId(selectedItem.id));
   };
 
   const handleExclude = () => {
@@ -70,8 +88,7 @@ export function ReviewScreen() {
 
     setShowExclude(false);
     setExcludeReason('');
-    const nextItem = pendingItems.find(r => r.id !== selectedItem.id);
-    setSelectedItemId(nextItem?.id || null);
+    setSelectedItemId(getNextSelectedPendingItemId(selectedItem.id));
   };
 
   const handleAskAccountant = () => {
@@ -80,24 +97,21 @@ export function ReviewScreen() {
     sendToAccountant([selectedItem.id], selectedItem.title, accountantQuestion);
     setAskingAccountant(false);
     setAccountantQuestion('');
-    const nextItem = pendingItems.find(r => r.id !== selectedItem.id);
-    setSelectedItemId(nextItem?.id || null);
+    setSelectedItemId(getNextSelectedPendingItemId(selectedItem.id));
   };
 
   const handleMarkPersonal = () => {
     if (!selectedItem || !selectedItem.transactionId) return;
     markAsPersonal(selectedItem.transactionId);
     resolveReviewItem(selectedItem.id, 'Operator', 'Marked as personal/shareholder expense');
-    const nextItem = pendingItems.find(r => r.id !== selectedItem.id);
-    setSelectedItemId(nextItem?.id || null);
+    setSelectedItemId(getNextSelectedPendingItemId(selectedItem.id));
   };
 
   const handleMarkSupport = () => {
     if (!selectedItem || !selectedItem.transactionId) return;
     markAsSupportOnly(selectedItem.transactionId);
     resolveReviewItem(selectedItem.id, 'Operator', 'Marked as support-only document');
-    const nextItem = pendingItems.find(r => r.id !== selectedItem.id);
-    setSelectedItemId(nextItem?.id || null);
+    setSelectedItemId(getNextSelectedPendingItemId(selectedItem.id));
   };
 
   return (

@@ -46,6 +46,7 @@ export interface Document {
   processedAt?: string;
   rotation: 0 | 90 | 180 | 270;
   pageCount: number;
+  relatedDocumentIds?: string[];
   extractedData?: {
     vendor?: string;
     date?: string;
@@ -130,7 +131,7 @@ export interface AuditEvent {
   id: string;
   caseId: string;
   timestamp: string;
-  eventType: 'document-added' | 'document-processed' | 'review-resolved' | 'accountant-answered' | 'transaction-modified' | 'export-generated';
+  eventType: 'document-added' | 'document-processed' | 'review-resolved' | 'review-reopened' | 'accountant-answered' | 'transaction-modified' | 'export-generated';
   userId: string;
   entityType: 'document' | 'transaction' | 'review-item' | 'accountant-question';
   entityId: string;

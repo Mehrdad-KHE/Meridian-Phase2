@@ -2,23 +2,22 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Download, CheckCircle, XCircle, AlertTriangle, FileSpreadsheet } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  buildType2ImportWorkbook,
+  buildType3AccountantReviewWorkbook,
+  buildType4ConsolidatedSummaryWorkbook,
+  downloadWorkbook,
+  type ExportSnapshot
+} from '../lib/exportWorkbooks';
 
 export function ExportScreen() {
-  const {
-    state,
-    canExport,
-    getCaseTransactions,
-    getCaseDocuments,
-    getCaseReviewItems
-  } = useApp();
+  const { state, canExport, getCaseTransactions, getCaseDocuments, getCaseReviewItems } = useApp();
 
   const [selectedOptions, setSelectedOptions] = useState({
-    fullPackage: true,
-    dailyBatch: false,
-    monthlyBatch: false,
-    sourceIndex: true,
-    accountantLog: true,
-    auditTrail: true
+    type1Pending: false,
+    type2ImportWorkbook: true,
+    type3AccountantReviewWorkbook: true,
+    type4ConsolidatedSummaryWorkbook: true
   });
 
   if (!state.selectedCaseId) {
@@ -33,33 +32,64 @@ export function ExportScreen() {
   const transactions = getCaseTransactions(state.selectedCaseId);
   const documents = getCaseDocuments(state.selectedCaseId);
   const reviewItems = getCaseReviewItems(state.selectedCaseId);
+  const firm = state.firms.find(item => item.id === state.selectedFirmId);
+  const client = state.clients.find(item => item.id === state.selectedClientId);
+  const period = state.periods.find(item => item.id === state.selectedPeriodId);
+  const caseItem = state.cases.find(item => item.id === state.selectedCaseId);
+
+  const exportSnapshot: ExportSnapshot = {
+    firm,
+    client,
+    period,
+    caseItem,
+    documents,
+    transactions,
+    reviewItems,
+    auditEvents: state.auditEvents.filter(event => event.caseId === state.selectedCaseId)
+  };
 
   const includedTransactions = transactions.filter(t => !t.isExcluded);
   const excludedTransactions = transactions.filter(t => t.isExcluded);
   const supportOnlyDocs = documents.filter(d => transactions.some(t => t.documentId === d.id && t.isSupportOnly));
-
-  const getCaseAuditEventsFunc = (caseId: string) => {
-    return state.auditEvents.filter(e => e.caseId === caseId);
-  };
-
-  const auditEvents = getCaseAuditEventsFunc(state.selectedCaseId);
+  const auditEvents = exportSnapshot.auditEvents;
 
   const toggleOption = (key: keyof typeof selectedOptions) => {
+    if (key === 'type1Pending') return;
     setSelectedOptions(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const hasExportTypeSelected =
+    selectedOptions.type2ImportWorkbook ||
+    selectedOptions.type3AccountantReviewWorkbook ||
+    selectedOptions.type4ConsolidatedSummaryWorkbook;
+
   const handleExport = () => {
+    if (!exportStatus.canExport || !hasExportTypeSelected) return;
+
+    const selectedWorkbooks = [];
+
+    if (selectedOptions.type2ImportWorkbook) {
+      selectedWorkbooks.push(buildType2ImportWorkbook(exportSnapshot));
+    }
+
+    if (selectedOptions.type3AccountantReviewWorkbook) {
+      selectedWorkbooks.push(buildType3AccountantReviewWorkbook(exportSnapshot));
+    }
+
+    if (selectedOptions.type4ConsolidatedSummaryWorkbook) {
+      selectedWorkbooks.push(buildType4ConsolidatedSummaryWorkbook(exportSnapshot));
+    }
+
+    selectedWorkbooks.forEach(result => downloadWorkbook(result.workbook, result.fileName));
+    toast.success(`Generated ${selectedWorkbooks.length} Excel workbook${selectedWorkbooks.length === 1 ? '' : 's'}.`);
+  };
+
+  const handlePreview = () => {
     if (!exportStatus.canExport) return;
 
-    const exportData = {
-      transactions: includedTransactions,
-      excluded: excludedTransactions,
-      auditTrail: auditEvents,
-      options: selectedOptions
-    };
-
-    console.log('Export package:', exportData);
-    toast.success('Export package would be generated here. Check console for data preview.');
+    const result = buildType4ConsolidatedSummaryWorkbook(exportSnapshot);
+    downloadWorkbook(result.workbook, result.fileName);
+    toast.success('Downloaded consolidated summary workbook.');
   };
 
   return (
@@ -218,19 +248,50 @@ export function ExportScreen() {
         <div className="bg-slate-900 border border-slate-800 rounded-lg p-6 mb-6">
           <h3 className="text-white mb-4">Export Package Options</h3>
           <div className="space-y-3">
-            {Object.entries(selectedOptions).map(([key, value]) => (
-              <label key={key} className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={value}
-                  onChange={() => toggleOption(key as keyof typeof selectedOptions)}
-                  className="w-4 h-4 rounded bg-slate-800 border-slate-700"
-                />
-                <span className="text-slate-300">
-                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                </span>
-              </label>
-            ))}
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={selectedOptions.type1Pending}
+                disabled
+                className="w-4 h-4 rounded bg-slate-800 border-slate-700 mt-0.5 cursor-not-allowed"
+              />
+              <div>
+                <div className="text-slate-300">Type 1 - Format pending — to be defined</div>
+                <div className="text-xs text-slate-500">
+                  No file is generated for this option yet.
+                </div>
+              </div>
+            </label>
+
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedOptions.type2ImportWorkbook}
+                onChange={() => toggleOption('type2ImportWorkbook')}
+                className="w-4 h-4 rounded bg-slate-800 border-slate-700"
+              />
+              <span className="text-slate-300">Type 2 - Import-style workbook</span>
+            </label>
+
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedOptions.type3AccountantReviewWorkbook}
+                onChange={() => toggleOption('type3AccountantReviewWorkbook')}
+                className="w-4 h-4 rounded bg-slate-800 border-slate-700"
+              />
+              <span className="text-slate-300">Type 3 - Accountant review workbook</span>
+            </label>
+
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedOptions.type4ConsolidatedSummaryWorkbook}
+                onChange={() => toggleOption('type4ConsolidatedSummaryWorkbook')}
+                className="w-4 h-4 rounded bg-slate-800 border-slate-700"
+              />
+              <span className="text-slate-300">Type 4 - Consolidated one-piece summary workbook</span>
+            </label>
           </div>
         </div>
 
@@ -238,10 +299,10 @@ export function ExportScreen() {
         <div className="flex gap-4">
           <button
             onClick={handleExport}
-            disabled={!exportStatus.canExport}
+            disabled={!exportStatus.canExport || !hasExportTypeSelected}
             className={`
               flex-1 px-6 py-4 rounded-lg flex items-center justify-center gap-3 transition-colors
-              ${exportStatus.canExport
+              ${exportStatus.canExport && hasExportTypeSelected
                 ? 'bg-green-600 hover:bg-green-700'
                 : 'bg-slate-700 cursor-not-allowed opacity-50'}
             `}
@@ -251,17 +312,14 @@ export function ExportScreen() {
           </button>
 
           <button
-            onClick={() => {
-              const preview = {
-                case: state.cases.find(c => c.id === state.selectedCaseId),
-                transactions: includedTransactions,
-                excluded: excludedTransactions,
-                auditEvents
-              };
-              console.log('Export preview:', preview);
-              toast.info('Preview data logged to console');
-            }}
-            className="px-6 py-4 bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center gap-2 transition-colors"
+            onClick={handlePreview}
+            disabled={!exportStatus.canExport}
+            className={`
+              px-6 py-4 rounded-lg flex items-center gap-2 transition-colors
+              ${exportStatus.canExport
+                ? 'bg-slate-800 hover:bg-slate-700'
+                : 'bg-slate-700 cursor-not-allowed opacity-50'}
+            `}
           >
             <FileSpreadsheet className="w-5 h-5" />
             Preview
