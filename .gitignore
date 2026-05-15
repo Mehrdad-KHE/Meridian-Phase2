@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+build/
+.vite/
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# environment
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# caches
+.cache/
+.turbo/
+.parcel-cache/
+
+# Claude harness worktrees — runtime only, never tracked
+.claude/worktrees/
