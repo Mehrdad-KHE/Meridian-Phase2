@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { Building2, TrendingUp, ArrowLeft } from 'lucide-react';
 import { Layout } from '../components/Layout';
+import { EngagementContextBar } from '../components/EngagementContextBar';
 
 export function Vendors() {
   const navigate = useNavigate();
@@ -12,11 +13,9 @@ export function Vendors() {
   ];
 
   return (
-    <Layout engagementName="Botax Accounting → Babak Mohammadhosseini → 2025 Annual">
+    <Layout>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col overflow-hidden">
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
-          <p className="text-xs text-[#9CA3AF] text-center w-full">Botax Accounting → Babak Mohammadhosseini → 2025 Annual</p>
-        </div>
+        <EngagementContextBar />
 
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto p-8">

@@ -13,6 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { Layout } from '../components/Layout';
+import { EngagementContextBar } from '../components/EngagementContextBar';
 
 type ExportFormat = 'Accountant Review Excel' | 'QuickBooks CSV' | 'Generic CSV';
 
@@ -31,8 +32,6 @@ interface ExportTemplate {
   default: boolean;
   lastUsed: string;
 }
-
-const engagementName = 'Botax Accounting → Babak Mohammadhosseini → 2025 Annual';
 
 const defaultColumns: ExportColumn[] = [
   { id: 'document_id', label: 'Document ID', enabled: true },
@@ -196,11 +195,9 @@ export function ExportMapping() {
   };
 
   return (
-    <Layout engagementName={engagementName}>
+    <Layout>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col overflow-hidden">
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
-          <p className="text-xs text-[#9CA3AF] text-center w-full">{engagementName}</p>
-        </div>
+        <EngagementContextBar />
 
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto px-6 py-6 space-y-6">

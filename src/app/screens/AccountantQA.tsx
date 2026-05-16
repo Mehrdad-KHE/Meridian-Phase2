@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, CheckCircle, Clock, MessageSquare } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
+import { EngagementContextBar } from '../components/EngagementContextBar';
 import { Layout } from '../components/Layout';
 
 type Question = {
@@ -47,13 +48,11 @@ export function AccountantQA() {
   };
 
   return (
-    <Layout engagementName="Botax Accounting → Babak Mohammadhosseini → 2025 Annual">
+    <Layout>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
         <WorkflowRoadmap currentStage="qa" />
 
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
-          <p className="text-xs text-[#9CA3AF] text-center w-full">Botax Accounting → Babak Mohammadhosseini → 2025 Annual</p>
-        </div>
+        <EngagementContextBar />
 
         <div className="flex-1 flex flex-col max-w-6xl mx-auto w-full px-6 py-4 overflow-hidden">
           <div className="flex items-start justify-between gap-4 mb-4">

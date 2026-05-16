@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import { ArrowRight, ChevronRight, FolderOpen } from 'lucide-react';
+import { useEngagement } from '../state/engagement';
 
 type EngagementStatus = 'Review' | 'Ready to export' | 'Exported';
 
@@ -47,6 +48,7 @@ const statusStyles: Record<EngagementStatus, string> = {
 
 export function Home() {
   const navigate = useNavigate();
+  const { state, loadDemo, clearEngagement } = useEngagement();
 
   return (
     <div className="min-h-screen bg-[#0F1419] text-[#F9FAFB]">
@@ -127,6 +129,31 @@ export function Home() {
             </div>
 
             <div className="space-y-4">
+              <div className="rounded-2xl border border-[#252C37] bg-[#1A1F28] p-4">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#6B7280]">Engagement</p>
+                {state.engagementLabel ? (
+                  <div className="mt-2 flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="text-sm font-medium text-[#D1D5DB] truncate">{state.engagementLabel}</p>
+                        {state.isDemo && (
+                          <span className="inline-flex items-center rounded-full border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-2 py-0.5 text-[10px] font-medium text-[#F59E0B]">
+                            demo data
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button onClick={clearEngagement} className="text-xs text-[#9CA3AF] hover:text-[#F9FAFB]">
+                      Clear
+                    </button>
+                  </div>
+                ) : (
+                  <button onClick={loadDemo} className="mt-2 text-left text-sm text-[#9CA3AF] hover:text-[#F9FAFB]">
+                    Load demo engagement
+                  </button>
+                )}
+              </div>
+
               <div className="rounded-2xl border border-[#252C37] bg-[#1A1F28] p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280] mb-2">Overview</p>
                 <p className="text-sm text-[#D1D5DB] leading-6">

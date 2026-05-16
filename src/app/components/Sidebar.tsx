@@ -12,14 +12,13 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import { useEngagement } from '../state/engagement';
 
-interface SidebarProps {
-  engagementName?: string;
-}
-
-export function Sidebar({ engagementName }: SidebarProps) {
+export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { state } = useEngagement();
+  const engagementName = state.engagementLabel ?? 'No engagement selected';
   const isAccountingSetupActive = () =>
     location.pathname.startsWith('/accounting-setup') || location.pathname === '/vendors';
   const isActive = (path: string) => location.pathname === path;
@@ -66,11 +65,9 @@ export function Sidebar({ engagementName }: SidebarProps) {
         </button>
 
         {/* Divider */}
-        {engagementName && (
-          <div className="my-3 border-t border-[#252C37]">
-            <p className="text-xs text-[#6B7280] mt-3 mb-2 px-3">Current Engagement</p>
-          </div>
-        )}
+        <div className="my-3 border-t border-[#252C37]">
+          <p className="text-xs text-[#6B7280] mt-3 mb-2 px-3">Current Engagement</p>
+        </div>
 
         {/* Documents */}
         <button
@@ -263,11 +260,9 @@ export function Sidebar({ engagementName }: SidebarProps) {
 
       {/* Footer */}
       <div className="p-3 border-t border-[#252C37] space-y-2">
-        {engagementName && (
-          <p className="text-xs text-[#6B7280] truncate" title={engagementName}>
-            {engagementName}
-          </p>
-        )}
+        <p className="text-xs text-[#6B7280] truncate" title={engagementName}>
+          {engagementName}
+        </p>
         <p className="text-[10px] text-[#6B7280]">© Meridian — All rights reserved.</p>
       </div>
     </div>

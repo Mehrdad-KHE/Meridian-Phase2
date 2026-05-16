@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ChevronDown, ArrowRight, ArrowLeft } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
+import { useEngagement } from '../state/engagement';
 
 type PeriodType = 'annual' | 'q1' | 'q2' | 'q3' | 'q4' | 'h1' | 'h2' | 'monthly' | 'custom';
 
@@ -49,6 +50,7 @@ function monthRange(month: string, fiscalYear: string) {
 
 export function SelectPeriod() {
   const navigate = useNavigate();
+  const { state, setEngagement } = useEngagement();
   const [fiscalYear, setFiscalYear] = useState('2025');
   const [periodType, setPeriodType] = useState<PeriodType>('annual');
   const [month, setMonth] = useState('January');
@@ -81,6 +83,31 @@ export function SelectPeriod() {
     }
   }, [customEnd, customStart, fiscalYear, month, periodType]);
 
+  const periodLabel = useMemo(() => {
+    switch (periodType) {
+      case 'annual':
+        return `${fiscalYear} Annual`;
+      case 'q1':
+        return `${fiscalYear} Q1`;
+      case 'q2':
+        return `${fiscalYear} Q2`;
+      case 'q3':
+        return `${fiscalYear} Q3`;
+      case 'q4':
+        return `${fiscalYear} Q4`;
+      case 'h1':
+        return `${fiscalYear} H1`;
+      case 'h2':
+        return `${fiscalYear} H2`;
+      case 'monthly':
+        return `${month} ${fiscalYear}`;
+      case 'custom':
+        return customStart && customEnd ? `Custom ${customStart} - ${customEnd}` : null;
+      default:
+        return null;
+    }
+  }, [customEnd, customStart, fiscalYear, month, periodType]);
+
   const canContinue = periodType !== 'custom' || Boolean(customStart && customEnd);
 
   return (
@@ -101,7 +128,13 @@ export function SelectPeriod() {
             <p className="text-sm text-[#9CA3AF] text-center">Select the fiscal year and period</p>
           </div>
           <button
-            onClick={() => navigate('/documents')}
+            onClick={() => {
+              if (!periodLabel) {
+                return;
+              }
+              setEngagement({ periodLabel, isDemo: false });
+              navigate('/documents');
+            }}
             disabled={!canContinue}
             className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] disabled:bg-[#374151] disabled:text-[#9CA3AF] text-white py-2.5 px-5 rounded-lg text-sm font-medium"
           >
@@ -115,7 +148,7 @@ export function SelectPeriod() {
         </div>
 
         <div className="bg-[#1A1F28] border-l-4 border-[#3B82F6] rounded p-4 mb-6">
-          <p className="text-sm">Botax Accounting → Babak Mohammadhosseini</p>
+          <p className="text-sm">{state.engagementLabel ?? 'No engagement selected'}</p>
         </div>
 
         <div className="space-y-6 mb-8">

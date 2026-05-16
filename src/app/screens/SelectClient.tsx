@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { X, ChevronDown } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
+import { useEngagement } from '../state/engagement';
 
 export function SelectClient() {
   const navigate = useNavigate();
+  const { state, setEngagement } = useEngagement();
   const [showModal, setShowModal] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
@@ -19,7 +21,8 @@ export function SelectClient() {
 
   const canSubmit = formData.name.trim().length > 0 && formData.businessType.trim().length > 0;
 
-  const handleSelect = () => {
+  const handleSelect = (clientName: string) => {
+    setEngagement({ clientName, periodLabel: null, isDemo: false });
     navigate('/setup/period');
   };
 
@@ -35,7 +38,7 @@ export function SelectClient() {
         </div>
 
         <div className="bg-[#1A1F28] border-l-4 border-[#3B82F6] rounded p-4 mb-6">
-          <p className="text-sm">Botax Accounting</p>
+          <p className="text-sm">{state.firmName ?? 'No engagement selected'}</p>
         </div>
 
         <p className="text-sm text-[#9CA3AF] mb-8">Select a client or add a new one</p>
@@ -45,7 +48,7 @@ export function SelectClient() {
             <h3 className="text-base font-medium mb-1">Babak Mohammadhosseini</h3>
             <p className="text-sm text-[#D1D5DB] mb-4">Self-employed contractor</p>
             <button
-              onClick={handleSelect}
+              onClick={() => handleSelect('Babak Mohammadhosseini')}
               className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-6 rounded-lg text-sm font-medium"
             >
               Select Client
@@ -56,7 +59,7 @@ export function SelectClient() {
             <h3 className="text-base font-medium mb-1">Acme Trucking Ltd.</h3>
             <p className="text-sm text-[#D1D5DB] mb-4">Corporation</p>
             <button
-              onClick={handleSelect}
+              onClick={() => handleSelect('Acme Trucking Ltd.')}
               className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-6 rounded-lg text-sm font-medium"
             >
               Select Client
@@ -203,7 +206,7 @@ export function SelectClient() {
                   }
                   setAttemptedSubmit(false);
                   setShowModal(false);
-                  handleSelect();
+                  handleSelect(formData.name.trim());
                 }}
                 disabled={!canSubmit}
                 className="bg-[#3B82F6] hover:bg-[#2563EB] disabled:bg-[#374151] disabled:text-[#9CA3AF] text-white py-2 px-6 rounded-lg text-sm font-medium"

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { X } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
+import { useEngagement } from '../state/engagement';
 
 export function SelectFirm() {
   const navigate = useNavigate();
+  const { setEngagement } = useEngagement();
   const [showModal, setShowModal] = useState(false);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [formData, setFormData] = useState({
@@ -16,7 +18,8 @@ export function SelectFirm() {
 
   const canSubmit = formData.name.trim().length > 0 && formData.email.trim().length > 0;
 
-  const handleSelect = () => {
+  const handleSelect = (firmName: string) => {
+    setEngagement({ firmName, clientName: null, periodLabel: null, isDemo: false });
     navigate('/setup/client');
   };
 
@@ -38,7 +41,7 @@ export function SelectFirm() {
             <h3 className="text-base font-medium mb-1">Botax Accounting</h3>
             <p className="text-sm text-[#D1D5DB] mb-4">Toronto, ON</p>
             <button
-              onClick={handleSelect}
+              onClick={() => handleSelect('Botax Accounting')}
               className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-6 rounded-lg text-sm font-medium"
             >
               Select Firm
@@ -49,7 +52,7 @@ export function SelectFirm() {
             <h3 className="text-base font-medium mb-1">Smith & Associates CPA</h3>
             <p className="text-sm text-[#D1D5DB] mb-4">Vancouver, BC</p>
             <button
-              onClick={handleSelect}
+              onClick={() => handleSelect('Smith & Associates CPA')}
               className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-6 rounded-lg text-sm font-medium"
             >
               Select Firm
@@ -151,7 +154,7 @@ export function SelectFirm() {
                   }
                   setAttemptedSubmit(false);
                   setShowModal(false);
-                  handleSelect();
+                  handleSelect(formData.name.trim());
                 }}
                 disabled={!canSubmit}
                 className="bg-[#3B82F6] hover:bg-[#2563EB] disabled:bg-[#374151] disabled:text-[#9CA3AF] text-white py-2 px-6 rounded-lg text-sm font-medium"

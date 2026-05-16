@@ -66,7 +66,7 @@ export function AccountingSetup() {
   ];
 
   return (
-    <Layout engagementName="Botax Accounting → Babak Mohammadhosseini → 2025 Annual">
+    <Layout>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="border-b border-[#252C37] p-6">

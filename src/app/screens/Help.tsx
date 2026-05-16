@@ -79,7 +79,7 @@ export function Help() {
   const selectedSectionData = helpSections.find(s => s.id === selectedSection);
 
   return (
-    <Layout engagementName="Botax Accounting → Babak Mohammadhosseini → 2025 Annual">
+    <Layout>
       <div className="h-screen flex flex-col bg-[#0F1419] text-[#F9FAFB]">
         {/* Header */}
         <div className="border-b border-[#252C37] p-6">
