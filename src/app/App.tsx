@@ -12,6 +12,11 @@ import { Export } from './screens/Export';
 import { SystemAdvanced } from './screens/SystemAdvanced';
 import { Help } from './screens/Help';
 import { AccountingSetup } from './screens/AccountingSetup';
+import { ChartOfAccounts } from './screens/ChartOfAccounts';
+import { GIFICodes } from './screens/GIFICodes';
+import { CategoryMapping } from './screens/CategoryMapping';
+import { ExportMapping } from './screens/ExportMapping';
+import { SavedTemplates } from './screens/SavedTemplates';
 
 export default function App() {
   return (
@@ -26,6 +31,11 @@ export default function App() {
         <Route path="/review" element={<Review />} />
         <Route path="/accountant-qa" element={<AccountantQA />} />
         <Route path="/accounting-setup" element={<AccountingSetup />} />
+        <Route path="/accounting-setup/chart-of-accounts" element={<ChartOfAccounts />} />
+        <Route path="/accounting-setup/gifi-codes" element={<GIFICodes />} />
+        <Route path="/accounting-setup/category-mapping" element={<CategoryMapping />} />
+        <Route path="/accounting-setup/export-mapping" element={<ExportMapping />} />
+        <Route path="/accounting-setup/templates" element={<SavedTemplates />} />
         <Route path="/vendors" element={<Vendors />} />
         <Route path="/export" element={<Export />} />
         <Route path="/system" element={<SystemAdvanced />} />
