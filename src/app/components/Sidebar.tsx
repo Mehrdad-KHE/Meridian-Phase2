@@ -263,7 +263,7 @@ export function Sidebar() {
         <p className="text-xs text-[#6B7280] truncate" title={engagementName}>
           {engagementName}
         </p>
-        <p className="text-[10px] text-[#6B7280]">© 2026 Meridian. All rights reserved.</p>
+        <p className="text-[10px] text-[#6B7280]">© 2026 Mehrdad Kheirollahi. All rights reserved.</p>
       </div>
     </div>
   );

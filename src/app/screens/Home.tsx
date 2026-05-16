@@ -178,7 +178,7 @@ export function Home() {
           </div>
         </div>
 
-        <p className="mt-10 pb-2 text-center text-[10px] text-[#6B7280]">© 2026 Meridian. All rights reserved.</p>
+        <p className="mt-10 pb-2 text-center text-[10px] text-[#6B7280]">© 2026 Mehrdad Kheirollahi. All rights reserved.</p>
       </div>
     </div>
   );
