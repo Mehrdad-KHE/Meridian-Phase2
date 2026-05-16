@@ -262,13 +262,14 @@ export function Sidebar({ engagementName }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      {engagementName && (
-        <div className="p-3 border-t border-[#252C37]">
+      <div className="p-3 border-t border-[#252C37] space-y-2">
+        {engagementName && (
           <p className="text-xs text-[#6B7280] truncate" title={engagementName}>
             {engagementName}
           </p>
-        </div>
-      )}
+        )}
+        <p className="text-[10px] text-[#6B7280]">© Meridian — All rights reserved.</p>
+      </div>
     </div>
   );
 

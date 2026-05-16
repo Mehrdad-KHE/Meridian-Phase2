@@ -214,6 +214,10 @@ export function SelectClient() {
           </div>
         </div>
       )}
+
+      <p className="pb-4 text-center text-[10px] text-[#6B7280]">
+        © Meridian — All rights reserved.
+      </p>
     </div>
   );
 }
