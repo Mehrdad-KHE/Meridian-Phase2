@@ -6,6 +6,7 @@ export interface EngagementState {
   periodLabel: string | null;
   engagementLabel: string | null;
   isDemo: boolean;
+  reviewResolved: boolean;
 }
 
 type EngagementPatch = {
@@ -13,6 +14,7 @@ type EngagementPatch = {
   clientName?: string | null;
   periodLabel?: string | null;
   isDemo?: boolean;
+  reviewResolved?: boolean;
 };
 
 type EngagementContextValue = {
@@ -30,6 +32,7 @@ const emptyState: EngagementState = {
   periodLabel: null,
   engagementLabel: null,
   isDemo: false,
+  reviewResolved: false,
 };
 
 const EngagementContext = createContext<EngagementContextValue | null>(null);
@@ -57,6 +60,7 @@ function buildState(input: EngagementPatch): EngagementState {
     periodLabel,
     engagementLabel: deriveEngagementLabel(firmName, clientName, periodLabel),
     isDemo: Boolean(input.isDemo),
+    reviewResolved: Boolean(input.reviewResolved),
   };
 }
 
@@ -77,6 +81,7 @@ function readStoredState() {
       clientName: normalizeString(parsed.clientName ?? null),
       periodLabel: normalizeString(parsed.periodLabel ?? null),
       isDemo: Boolean(parsed.isDemo),
+      reviewResolved: Boolean(parsed.reviewResolved),
     });
   } catch {
     return emptyState;
@@ -100,13 +105,27 @@ export function EngagementProvider({ children }: { children: ReactNode }) {
       const nextClient = patch.clientName !== undefined ? normalizeString(patch.clientName) : current.clientName;
       const nextPeriod = patch.periodLabel !== undefined ? normalizeString(patch.periodLabel) : current.periodLabel;
       const nextIsDemo = patch.isDemo ?? false;
+      const nextLabel = deriveEngagementLabel(nextFirm, nextClient, nextPeriod);
+      const coreFieldsUpdated =
+        patch.firmName !== undefined || patch.clientName !== undefined || patch.periodLabel !== undefined;
+      const nextReviewResolved =
+        patch.reviewResolved !== undefined
+          ? patch.reviewResolved
+          : coreFieldsUpdated && (
+              nextFirm !== current.firmName ||
+              nextClient !== current.clientName ||
+              nextPeriod !== current.periodLabel
+            )
+            ? false
+            : current.reviewResolved;
 
       return {
         firmName: nextFirm,
         clientName: nextClient,
         periodLabel: nextPeriod,
-        engagementLabel: deriveEngagementLabel(nextFirm, nextClient, nextPeriod),
+        engagementLabel: nextLabel,
         isDemo: nextIsDemo,
+        reviewResolved: nextReviewResolved,
       };
     });
   };
@@ -122,6 +141,7 @@ export function EngagementProvider({ children }: { children: ReactNode }) {
         clientName: 'Babak Mohammadhosseini',
         periodLabel: '2025 Annual',
         isDemo: true,
+        reviewResolved: false,
       }),
     );
   };

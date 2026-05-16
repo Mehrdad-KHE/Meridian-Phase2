@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, AlertCircle, FileText, TrendingUp } from 'lucide
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
 import { EngagementContextBar } from '../components/EngagementContextBar';
 import { Layout } from '../components/Layout';
+import { useEngagement } from '../state/engagement';
 
 type ReviewItem = {
   id: number;
@@ -17,6 +18,7 @@ type ReviewItem = {
 
 export function Review() {
   const navigate = useNavigate();
+  const { state, setEngagement } = useEngagement();
   const [selectedItem, setSelectedItem] = useState<number | null>(null);
   const [reviewItems] = useState<ReviewItem[]>([
     {
@@ -54,6 +56,30 @@ export function Review() {
     return 'text-[#EF4444]';
   };
 
+  if (!state.engagementLabel) {
+    return (
+      <Layout>
+        <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
+          <WorkflowRoadmap currentStage="review" />
+          <EngagementContextBar />
+
+          <div className="flex-1 flex items-center justify-center px-6">
+            <div className="w-full max-w-lg rounded-2xl border border-[#252C37] bg-[#1A1F28] p-8 text-center">
+              <h1 className="text-xl font-semibold mb-3">No engagement selected</h1>
+              <p className="text-sm text-[#9CA3AF] mb-6">No engagement selected — start or load one</p>
+              <button
+                onClick={() => navigate('/')}
+                className="inline-flex items-center justify-center rounded-lg bg-[#3B82F6] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#2563EB]"
+              >
+                Go to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
@@ -80,6 +106,19 @@ export function Review() {
             >
               Continue to Export
               <ArrowRight size={16} />
+            </button>
+          </div>
+
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setEngagement({ reviewResolved: !state.reviewResolved })}
+              className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium ${
+                state.reviewResolved
+                  ? 'border-[#10B981] bg-[#10B981]/10 text-[#10B981] hover:bg-[#10B981]/15'
+                  : 'border-[#374151] text-[#D1D5DB] hover:bg-[#374151]'
+              }`}
+            >
+              {state.reviewResolved ? 'Unmark review resolved' : 'Mark review resolved'}
             </button>
           </div>
 

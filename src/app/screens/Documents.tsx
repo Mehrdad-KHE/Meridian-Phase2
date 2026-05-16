@@ -4,9 +4,11 @@ import { ArrowLeft, ArrowRight, Upload, FileText, CheckCircle, AlertCircle, Copy
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
 import { EngagementContextBar } from '../components/EngagementContextBar';
 import { Layout } from '../components/Layout';
+import { useEngagement } from '../state/engagement';
 
 export function Documents() {
   const navigate = useNavigate();
+  const { state } = useEngagement();
   const [activeTab, setActiveTab] = useState<'all' | 'read' | 'needsFix' | 'duplicates'>('all');
   const [documents] = useState([
     { id: 1, name: 'receipt-2025-01-15.pdf', status: 'Read' },
@@ -37,6 +39,30 @@ export function Documents() {
     if (status === 'Duplicate') return 'text-[#6B7280]';
     return 'text-[#9CA3AF]';
   };
+
+  if (!state.engagementLabel) {
+    return (
+      <Layout>
+        <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
+          <WorkflowRoadmap currentStage="documents" />
+          <EngagementContextBar />
+
+          <div className="flex-1 flex items-center justify-center px-6">
+            <div className="w-full max-w-lg rounded-2xl border border-[#252C37] bg-[#1A1F28] p-8 text-center">
+              <h1 className="text-xl font-semibold mb-3">No engagement selected</h1>
+              <p className="text-sm text-[#9CA3AF] mb-6">No engagement selected — start or load one</p>
+              <button
+                onClick={() => navigate('/')}
+                className="inline-flex items-center justify-center rounded-lg bg-[#3B82F6] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#2563EB]"
+              >
+                Go to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

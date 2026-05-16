@@ -1,14 +1,39 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Download, AlertTriangle, CheckCircle, FileSpreadsheet, FileText } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
 import { EngagementContextBar } from '../components/EngagementContextBar';
 import { Layout } from '../components/Layout';
+import { useEngagement } from '../state/engagement';
 
 export function Export() {
   const navigate = useNavigate();
-  const [isReady] = useState(true);
-  const [blockers] = useState<string[]>([]);
+  const { state } = useEngagement();
+  const isReady = state.reviewResolved;
+  const blockers = isReady ? [] : ['Review has not been marked resolved yet.'];
+
+  if (!state.engagementLabel) {
+    return (
+      <Layout>
+        <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
+          <WorkflowRoadmap currentStage="export" />
+          <EngagementContextBar />
+
+          <div className="flex-1 flex items-center justify-center px-6">
+            <div className="w-full max-w-lg rounded-2xl border border-[#252C37] bg-[#1A1F28] p-8 text-center">
+              <h1 className="text-xl font-semibold mb-3">No engagement selected</h1>
+              <p className="text-sm text-[#9CA3AF] mb-6">No engagement selected — start or load one</p>
+              <button
+                onClick={() => navigate('/')}
+                className="inline-flex items-center justify-center rounded-lg bg-[#3B82F6] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#2563EB]"
+              >
+                Go to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -27,10 +52,20 @@ export function Export() {
               Back
             </button>
             <h1 className="text-xl font-semibold pt-1">Export</h1>
-            <button className="inline-flex items-center gap-2 bg-[#10B981] hover:bg-[#059669] text-white py-2 px-4 rounded-lg text-sm font-medium">
-              <Download size={16} />
-              Download Accountant Package
-            </button>
+            {isReady ? (
+              <button className="inline-flex items-center gap-2 bg-[#10B981] hover:bg-[#059669] text-white py-2 px-4 rounded-lg text-sm font-medium">
+                <Download size={16} />
+                Download Accountant Package
+              </button>
+            ) : (
+              <button
+                disabled
+                className="inline-flex items-center gap-2 bg-[#374151] text-[#9CA3AF] py-2 px-4 rounded-lg text-sm font-medium cursor-not-allowed"
+              >
+                <Download size={16} />
+                Download Accountant Package
+              </button>
+            )}
           </div>
 
           {isReady ? (
