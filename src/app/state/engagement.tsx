@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
 export interface EngagementState {
   firmName: string | null;
@@ -72,6 +72,16 @@ function readStoredState() {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) {
+      if (import.meta.env.VITE_DEMO_SEED === 'true') {
+        return buildState({
+          firmName: 'Botax Accounting',
+          clientName: 'Babak Mohammadhosseini',
+          periodLabel: '2025 Annual',
+          isDemo: true,
+          reviewResolved: false,
+        });
+      }
+
       return emptyState;
     }
 
@@ -90,6 +100,7 @@ function readStoredState() {
 
 export function EngagementProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<EngagementState>(() => readStoredState());
+  const demoSeedApplied = useRef(false);
 
   useEffect(() => {
     try {
@@ -145,6 +156,30 @@ export function EngagementProvider({ children }: { children: ReactNode }) {
       }),
     );
   };
+
+  useEffect(() => {
+    if (demoSeedApplied.current) {
+      return;
+    }
+
+    demoSeedApplied.current = true;
+
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (state.engagementLabel) {
+      return;
+    }
+
+    if (window.localStorage.getItem(STORAGE_KEY)) {
+      return;
+    }
+
+    if (import.meta.env.VITE_DEMO_SEED === 'true') {
+      loadDemo();
+    }
+  }, []);
 
   return (
     <EngagementContext.Provider value={{ state, setEngagement, clearEngagement, loadDemo }}>
