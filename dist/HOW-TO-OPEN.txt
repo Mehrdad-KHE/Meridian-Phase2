@@ -1,2 +1,1 @@
-open a terminal in this folder
-run:  npx --yes serve -s .   (then open the shown localhost URL)
+Unzip, then double-click index.html

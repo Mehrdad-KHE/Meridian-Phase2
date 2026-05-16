@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { HashRouter, Routes, Route, Navigate } from 'react-router';
 import { EngagementProvider } from './state/engagement';
 import { Home } from './screens/Home';
 import { SelectFirm } from './screens/SelectFirm';
@@ -21,7 +21,7 @@ import { SavedTemplates } from './screens/SavedTemplates';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <EngagementProvider>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -45,6 +45,6 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </EngagementProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
