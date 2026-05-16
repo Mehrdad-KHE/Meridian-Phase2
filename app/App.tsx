@@ -1,56 +1,37 @@
-import React from 'react';
-import { AppProvider, useApp } from './context/AppContext';
-import { Layout } from './components/Layout';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { WorkspaceScreen } from './screens/WorkspaceScreen';
-import { DocumentsScreen } from './screens/DocumentsScreen';
-import { ProcessingScreen } from './screens/ProcessingScreen';
-import { ReviewScreen } from './screens/ReviewScreen';
-import { AccountantQAScreen } from './screens/AccountantQAScreen';
-import { VendorsScreen } from './screens/VendorsScreen';
-import { ExportScreen } from './screens/ExportScreen';
-import { Toaster } from './components/ui/sonner';
-
-function AppContent() {
-  const { state } = useApp();
-
-  const renderScreen = () => {
-    switch (state.currentScreen) {
-      case 'workspace':
-        return <WorkspaceScreen />;
-      case 'documents':
-        return <DocumentsScreen />;
-      case 'processing':
-        return <ProcessingScreen />;
-      case 'review':
-        return <ReviewScreen />;
-      case 'accountant-qa':
-        return <AccountantQAScreen />;
-      case 'vendors':
-        return <VendorsScreen />;
-      case 'export':
-        return <ExportScreen />;
-      default:
-        return <WorkspaceScreen />;
-    }
-  };
-
-  return (
-    <Layout>
-      {renderScreen()}
-    </Layout>
-  );
-}
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { Home } from './screens/Home';
+import { SelectFirm } from './screens/SelectFirm';
+import { SelectClient } from './screens/SelectClient';
+import { SelectPeriod } from './screens/SelectPeriod';
+import { Documents } from './screens/Documents';
+import { Processing } from './screens/Processing';
+import { Review } from './screens/Review';
+import { AccountantQA } from './screens/AccountantQA';
+import { Vendors } from './screens/Vendors';
+import { Export } from './screens/Export';
+import { SystemAdvanced } from './screens/SystemAdvanced';
+import { Help } from './screens/Help';
+import { AccountingSetup } from './screens/AccountingSetup';
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <AppProvider initialMode="demo">
-        <ErrorBoundary>
-          <AppContent />
-          <Toaster richColors position="top-right" />
-        </ErrorBoundary>
-      </AppProvider>
-    </ErrorBoundary>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/setup/firm" element={<SelectFirm />} />
+        <Route path="/setup/client" element={<SelectClient />} />
+        <Route path="/setup/period" element={<SelectPeriod />} />
+        <Route path="/documents" element={<Documents />} />
+        <Route path="/processing" element={<Processing />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/accountant-qa" element={<AccountantQA />} />
+        <Route path="/accounting-setup" element={<AccountingSetup />} />
+        <Route path="/vendors" element={<Vendors />} />
+        <Route path="/export" element={<Export />} />
+        <Route path="/system" element={<SystemAdvanced />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
