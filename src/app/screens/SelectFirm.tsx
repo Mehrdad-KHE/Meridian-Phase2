@@ -38,10 +38,10 @@ export function SelectFirm() {
 
         <div className="space-y-4 mb-6">
           <div className="bg-[#1A1F28] rounded-lg p-6 border border-[#252C37]">
-            <h3 className="text-base font-medium mb-1">Botax Accounting</h3>
+            <h3 className="text-base font-medium mb-1">Northpeak Accounting</h3>
             <p className="text-sm text-[#D1D5DB] mb-4">Toronto, ON</p>
             <button
-              onClick={() => handleSelect('Botax Accounting')}
+              onClick={() => handleSelect('Northpeak Accounting')}
               className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-6 rounded-lg text-sm font-medium"
             >
               Select Firm
@@ -166,9 +166,7 @@ export function SelectFirm() {
         </div>
       )}
 
-      <p className="pb-4 text-center text-[10px] text-[#6B7280]">
-        © Meridian — All rights reserved.
-      </p>
+      <p className="pb-4 text-center text-[10px] text-[#6B7280]">© 2026 Meridian. All rights reserved.</p>
     </div>
   );
 }

@@ -15,7 +15,7 @@ interface EngagementCard {
 
 const engagements: EngagementCard[] = [
   {
-    client: 'Babak Mohammadhosseini',
+    client: 'Daniel Roberts',
     period: '2025 Annual',
     status: 'Review',
     lastActivity: 'Last activity: 12 minutes ago',
@@ -178,9 +178,7 @@ export function Home() {
           </div>
         </div>
 
-        <p className="mt-10 pb-2 text-center text-[10px] text-[#6B7280]">
-          © Meridian — All rights reserved.
-        </p>
+        <p className="mt-10 pb-2 text-center text-[10px] text-[#6B7280]">© 2026 Meridian. All rights reserved.</p>
       </div>
     </div>
   );

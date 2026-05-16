@@ -78,7 +78,7 @@ Context Bar should show:
 Firm → Client → Period
 
 Example:
-Botax Accounting → Babak Mohammadhosseini → 2025 Annual
+Northpeak Accounting → Daniel Roberts → 2025 Annual
 
 Opening / Welcome screen:
 Create a simple branded opening screen for Meridian.

@@ -74,8 +74,8 @@ function readStoredState() {
     if (!raw) {
       if (import.meta.env.VITE_DEMO_SEED === 'true') {
         return buildState({
-          firmName: 'Botax Accounting',
-          clientName: 'Babak Mohammadhosseini',
+          firmName: 'Northpeak Accounting',
+          clientName: 'Daniel Roberts',
           periodLabel: '2025 Annual',
           isDemo: true,
           reviewResolved: false,
@@ -148,8 +148,8 @@ export function EngagementProvider({ children }: { children: ReactNode }) {
   const loadDemo = () => {
     setState(
       buildState({
-        firmName: 'Botax Accounting',
-        clientName: 'Babak Mohammadhosseini',
+        firmName: 'Northpeak Accounting',
+        clientName: 'Daniel Roberts',
         periodLabel: '2025 Annual',
         isDemo: true,
         reviewResolved: false,

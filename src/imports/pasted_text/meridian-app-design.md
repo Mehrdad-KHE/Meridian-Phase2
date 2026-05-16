@@ -83,7 +83,7 @@ Document Intake
 Accountant / Firm → Client → Period
 
 مثلاً:
-Botax Accounting → Babak Mohammadhosseini → 2025 Annual Period
+Northpeak Accounting → Daniel Roberts → 2025 Annual Period
 
 این نوار باید باریک باشد و صفحه را شلوغ نکند.
 
