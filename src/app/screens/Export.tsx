@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Download, AlertTriangle, CheckCircle, FileSpreadsheet, FileText } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
@@ -9,7 +10,24 @@ export function Export() {
   const navigate = useNavigate();
   const { state } = useEngagement();
   const isReady = state.reviewResolved;
-  const blockers = isReady ? [] : ['Review has not been marked resolved yet.'];
+
+  const blockers = useMemo(() => {
+    if (isReady) {
+      return [];
+    }
+
+    if (state.reviewItems.length === 0) {
+      return ['Nothing has been reviewed yet.'];
+    }
+
+    return state.reviewItems
+      .filter((item) => item.status !== 'resolved')
+      .map((item) =>
+        item.status === 'asked'
+          ? `${item.title} is waiting for an accountant answer.`
+          : `${item.title} is still open.`,
+      );
+  }, [isReady, state.reviewItems]);
 
   if (!state.engagementLabel) {
     return (
@@ -133,8 +151,8 @@ export function Export() {
                 <div className="bg-[#252C37] rounded p-3 mt-3">
                   <p className="text-xs font-medium mb-2">Blockers:</p>
                   <ul className="space-y-1">
-                    {blockers.map((blocker, idx) => (
-                      <li key={idx} className="text-xs text-[#D1D5DB] flex items-start gap-2">
+                    {blockers.map((blocker) => (
+                      <li key={blocker} className="text-xs text-[#D1D5DB] flex items-start gap-2">
                         <span className="text-[#F59E0B]">•</span>
                         <span>{blocker}</span>
                       </li>

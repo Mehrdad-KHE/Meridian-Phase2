@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
@@ -13,6 +13,9 @@ export function Processing() {
   const [currentStep, setCurrentStep] = useState('Reading documents');
   const [isComplete, setIsComplete] = useState(false);
 
+  const documents = state.documents;
+  const reviewItems = state.reviewItems;
+
   const steps = [
     'Reading documents',
     'Extracting text',
@@ -21,6 +24,18 @@ export function Processing() {
     'Matching to accounting categories',
     'Preparing review items',
   ];
+
+  const metrics = useMemo(
+    () => ({
+      read: documents.filter((document) => document.status === 'read').length,
+      autoClassified: documents.filter((document) => document.status === 'read' || document.status === 'duplicate' || document.status === 'excluded')
+        .length,
+      needReview: reviewItems.filter((item) => item.status !== 'resolved').length,
+      unreadable: documents.filter((document) => document.status === 'needs_fix').length,
+      duplicates: documents.filter((document) => document.status === 'duplicate').length,
+    }),
+    [documents, reviewItems],
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -64,6 +79,30 @@ export function Processing() {
     );
   }
 
+  if (documents.length === 0) {
+    return (
+      <Layout>
+        <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
+          <WorkflowRoadmap currentStage="processing" />
+          <EngagementContextBar />
+
+          <div className="flex-1 flex items-center justify-center px-6">
+            <div className="w-full max-w-lg rounded-2xl border border-[#252C37] bg-[#1A1F28] p-8 text-center">
+              <h1 className="text-xl font-semibold mb-3">Nothing here yet</h1>
+              <p className="text-sm text-[#9CA3AF] mb-6">Add documents before processing can begin.</p>
+              <button
+                onClick={() => navigate('/documents')}
+                className="inline-flex items-center justify-center rounded-lg bg-[#3B82F6] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#2563EB]"
+              >
+                Go to Documents
+              </button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
@@ -80,7 +119,10 @@ export function Processing() {
               <ArrowLeft size={16} />
               Back
             </button>
-            <h1 className="text-xl font-semibold pt-1">Processing</h1>
+            <div>
+              <h1 className="text-xl font-semibold pt-1">Processing</h1>
+              <p className="text-xs text-[#6B7280] mt-1">Document readout and classification are driven by the local workflow store.</p>
+            </div>
             <button
               onClick={() => navigate('/review')}
               disabled={!isComplete}
@@ -92,7 +134,7 @@ export function Processing() {
           </div>
 
           {!isComplete ? (
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col gap-4">
               <div className="bg-[#1A1F28] border border-[#252C37] rounded p-6">
                 <div className="mb-6">
                   <div className="flex justify-between items-center mb-2">
@@ -131,6 +173,42 @@ export function Processing() {
                   })}
                 </div>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-[#1A1F28] border border-[#252C37] rounded-lg p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280] mb-3">Document Summary</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between py-2 border-b border-[#252C37]">
+                      <span className="text-[#D1D5DB]">Documents read successfully</span>
+                      <span className="font-medium">{metrics.read}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-[#252C37]">
+                      <span className="text-[#D1D5DB]">Documents auto-classified</span>
+                      <span className="font-medium">{metrics.autoClassified}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-[#252C37]">
+                      <span className="text-[#F59E0B]">Documents need review</span>
+                      <span className="font-medium text-[#F59E0B]">{metrics.needReview}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-[#252C37]">
+                      <span className="text-[#EF4444]">Documents unreadable</span>
+                      <span className="font-medium text-[#EF4444]">{metrics.unreadable}</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                      <span className="text-[#6B7280]">Duplicates found</span>
+                      <span className="font-medium text-[#6B7280]">{metrics.duplicates}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#1A1F28] border border-[#252C37] rounded-lg p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280] mb-3">Local Workflow Notes</p>
+                  <p className="text-sm text-[#D1D5DB] leading-6">
+                    This prototype uses the local store only. Reclassifying a document, adding a new scan, or changing a review decision
+                    will re-open affected items automatically.
+                  </p>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="space-y-6">
@@ -143,23 +221,23 @@ export function Processing() {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between py-2 border-b border-[#252C37]">
                     <span className="text-[#D1D5DB]">Documents read successfully</span>
-                    <span className="font-medium">32</span>
+                    <span className="font-medium">{metrics.read}</span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-[#252C37]">
                     <span className="text-[#D1D5DB]">Documents auto-classified</span>
-                    <span className="font-medium">26</span>
+                    <span className="font-medium">{metrics.autoClassified}</span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-[#252C37]">
                     <span className="text-[#F59E0B]">Documents need review</span>
-                    <span className="font-medium text-[#F59E0B]">6</span>
+                    <span className="font-medium text-[#F59E0B]">{metrics.needReview}</span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-[#252C37]">
                     <span className="text-[#EF4444]">Documents unreadable</span>
-                    <span className="font-medium text-[#EF4444]">0</span>
+                    <span className="font-medium text-[#EF4444]">{metrics.unreadable}</span>
                   </div>
                   <div className="flex justify-between py-2">
                     <span className="text-[#6B7280]">Duplicates found</span>
-                    <span className="font-medium text-[#6B7280]">0</span>
+                    <span className="font-medium text-[#6B7280]">{metrics.duplicates}</span>
                   </div>
                 </div>
               </div>

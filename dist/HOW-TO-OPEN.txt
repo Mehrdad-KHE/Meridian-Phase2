@@ -1,1 +1,0 @@
-Unzip, then double-click index.html
