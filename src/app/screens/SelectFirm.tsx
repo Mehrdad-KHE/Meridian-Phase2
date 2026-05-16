@@ -6,12 +6,15 @@ import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
 export function SelectFirm() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     address: ''
   });
+
+  const canSubmit = formData.name.trim().length > 0 && formData.email.trim().length > 0;
 
   const handleSelect = () => {
     navigate('/setup/client');
@@ -55,7 +58,10 @@ export function SelectFirm() {
         </div>
 
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setAttemptedSubmit(false);
+            setShowModal(true);
+          }}
           className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] py-2 px-6 rounded-lg text-sm font-medium"
         >
           Add New Firm
@@ -86,6 +92,9 @@ export function SelectFirm() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-[#0F1419] border border-[#374151] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#3B82F6]"
                 />
+                {attemptedSubmit && !formData.name.trim() && (
+                  <p className="mt-1 text-xs text-[#FCA5A5]">Firm name is required.</p>
+                )}
               </div>
 
               <div>
@@ -98,6 +107,9 @@ export function SelectFirm() {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full bg-[#0F1419] border border-[#374151] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#3B82F6]"
                 />
+                {attemptedSubmit && !formData.email.trim() && (
+                  <p className="mt-1 text-xs text-[#FCA5A5]">Email is required.</p>
+                )}
               </div>
 
               <div>
@@ -123,17 +135,26 @@ export function SelectFirm() {
 
             <div className="flex justify-end gap-3 mt-6">
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setAttemptedSubmit(false);
+                  setShowModal(false);
+                }}
                 className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] py-2 px-6 rounded-lg text-sm font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={() => {
+                  setAttemptedSubmit(true);
+                  if (!canSubmit) {
+                    return;
+                  }
+                  setAttemptedSubmit(false);
                   setShowModal(false);
                   handleSelect();
                 }}
-                className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-6 rounded-lg text-sm font-medium"
+                disabled={!canSubmit}
+                className="bg-[#3B82F6] hover:bg-[#2563EB] disabled:bg-[#374151] disabled:text-[#9CA3AF] text-white py-2 px-6 rounded-lg text-sm font-medium"
               >
                 Add Firm
               </button>

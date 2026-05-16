@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Upload, FileText, CheckCircle, AlertCircle, Copy } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Upload, FileText, CheckCircle, AlertCircle, Copy } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
 import { Layout } from '../components/Layout';
 
@@ -15,7 +15,7 @@ export function Documents() {
     { id: 5, name: 'receipt-duplicate.pdf', status: 'Duplicate' }
   ]);
 
-  const filteredDocs = documents.filter(doc => {
+  const filteredDocs = documents.filter((doc) => {
     if (activeTab === 'all') return true;
     if (activeTab === 'read') return doc.status === 'Read';
     if (activeTab === 'needsFix') return doc.status === 'Needs Fix';
@@ -42,13 +42,27 @@ export function Documents() {
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col">
         <WorkflowRoadmap currentStage="documents" />
 
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6">
-          <p className="text-xs text-[#9CA3AF]">Botax Accounting → Babak Mohammadhosseini → 2025 Annual</p>
+        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
+          <p className="text-xs text-[#9CA3AF] text-center w-full">Botax Accounting → Babak Mohammadhosseini → 2025 Annual</p>
         </div>
 
         <div className="flex-1 flex flex-col max-w-6xl mx-auto w-full px-6 py-4 overflow-hidden">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-semibold">Documents</h1>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <button
+              onClick={() => navigate('/setup/period')}
+              className="inline-flex items-center gap-2 border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] py-2 px-4 rounded-lg text-sm font-medium"
+            >
+              <ArrowLeft size={16} />
+              Back
+            </button>
+            <h1 className="text-xl font-semibold pt-1">Documents</h1>
+            <button
+              onClick={() => navigate('/processing')}
+              className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-4 rounded-lg text-sm font-medium"
+            >
+              Continue to Processing
+              <ArrowRight size={16} />
+            </button>
           </div>
 
           <div className="bg-[#1A1F28] border-2 border-dashed border-[#374151] rounded p-6 mb-4 text-center hover:border-[#3B82F6] cursor-pointer transition-colors">
@@ -79,7 +93,7 @@ export function Documents() {
                   : 'border-transparent text-[#9CA3AF] hover:text-[#F9FAFB]'
               }`}
             >
-              Read ({documents.filter(d => d.status === 'Read').length})
+              Read ({documents.filter((d) => d.status === 'Read').length})
             </button>
             <button
               onClick={() => setActiveTab('needsFix')}
@@ -89,7 +103,7 @@ export function Documents() {
                   : 'border-transparent text-[#9CA3AF] hover:text-[#F9FAFB]'
               }`}
             >
-              Needs Fix ({documents.filter(d => d.status === 'Needs Fix').length})
+              Needs Fix ({documents.filter((d) => d.status === 'Needs Fix').length})
             </button>
             <button
               onClick={() => setActiveTab('duplicates')}
@@ -99,13 +113,16 @@ export function Documents() {
                   : 'border-transparent text-[#9CA3AF] hover:text-[#F9FAFB]'
               }`}
             >
-              Duplicates ({documents.filter(d => d.status === 'Duplicate').length})
+              Duplicates ({documents.filter((d) => d.status === 'Duplicate').length})
             </button>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-1.5 mb-4">
-            {filteredDocs.map(doc => (
-              <div key={doc.id} className="bg-[#1A1F28] border border-[#252C37] rounded p-3 flex items-center justify-between hover:border-[#374151] transition-colors">
+            {filteredDocs.map((doc) => (
+              <div
+                key={doc.id}
+                className="bg-[#1A1F28] border border-[#252C37] rounded p-3 flex items-center justify-between hover:border-[#374151] transition-colors"
+              >
                 <div className="flex items-center gap-2.5">
                   {getStatusIcon(doc.status)}
                   <span className="text-xs">{doc.name}</span>
@@ -113,21 +130,6 @@ export function Documents() {
                 <span className={`text-xs ${getStatusColor(doc.status)}`}>{doc.status}</span>
               </div>
             ))}
-          </div>
-
-          <div className="flex justify-between pt-3 border-t border-[#1F2937]">
-            <button
-              onClick={() => navigate('/setup/period')}
-              className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] py-1.5 px-4 rounded text-xs font-medium"
-            >
-              Back
-            </button>
-            <button
-              onClick={() => navigate('/processing')}
-              className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-1.5 px-4 rounded text-xs font-medium"
-            >
-              Continue to Processing
-            </button>
           </div>
         </div>
       </div>

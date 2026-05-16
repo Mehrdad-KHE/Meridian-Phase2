@@ -32,7 +32,7 @@ interface ExportTemplate {
   lastUsed: string;
 }
 
-const engagementName = 'Botax Accounting -> Babak Mohammadhosseini -> 2025 Annual';
+const engagementName = 'Botax Accounting → Babak Mohammadhosseini → 2025 Annual';
 
 const defaultColumns: ExportColumn[] = [
   { id: 'document_id', label: 'Document ID', enabled: true },
@@ -57,7 +57,7 @@ const initialTemplates: ExportTemplate[] = [
   {
     id: 'default-review',
     name: 'Default Excel Template',
-    description: 'Standard accountant review layout',
+    description: 'Standard accountant review workbook',
     format: 'Accountant Review Excel',
     columns: defaultColumns.map((column) => ({ ...column })),
     default: true,
@@ -65,8 +65,8 @@ const initialTemplates: ExportTemplate[] = [
   },
   {
     id: 'quickbooks-csv',
-    name: 'QuickBooks Import',
-    description: 'Import-ready QuickBooks columns',
+    name: 'QuickBooks Import CSV',
+    description: 'Import-style export for QuickBooks handoff',
     format: 'QuickBooks CSV',
     columns: defaultColumns
       .filter((column) => column.enabled)
@@ -76,8 +76,8 @@ const initialTemplates: ExportTemplate[] = [
   },
   {
     id: 'draft-review',
-    name: 'Draft Review',
-    description: 'Compact internal review pack',
+    name: 'Draft Review Pack',
+    description: 'Compact review pack for the accountant',
     format: 'Generic CSV',
     columns: defaultColumns.map((column) => ({ ...column })),
     default: false,
@@ -198,8 +198,8 @@ export function ExportMapping() {
   return (
     <Layout engagementName={engagementName}>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col overflow-hidden">
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6">
-          <p className="text-xs text-[#9CA3AF]">{engagementName}</p>
+        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
+          <p className="text-xs text-[#9CA3AF] text-center w-full">{engagementName}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -209,7 +209,7 @@ export function ExportMapping() {
               className="inline-flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#F9FAFB] w-fit"
             >
               <ArrowLeft size={16} />
-              ← Back to Accounting Setup
+              Back to Accounting Setup
             </button>
 
             <div className="space-y-2">
@@ -322,14 +322,6 @@ export function ExportMapping() {
                         <p className="text-xs text-[#6B7280]">{column.id.replace(/_/g, ' ')}</p>
                       </div>
 
-                      <button
-                        onClick={() => setMessage(`${column.label} toggled locally.`)}
-                        className="text-[#6B7280] hover:text-[#F9FAFB] cursor-grab"
-                        type="button"
-                        aria-label={`Move ${column.label}`}
-                      >
-                        <GripVertical size={16} />
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -417,6 +409,17 @@ export function ExportMapping() {
                         <p className="text-xs text-[#9CA3AF] mt-2">{template.description}</p>
                       </button>
                     ))}
+                  </div>
+                  <div className="mt-4 rounded-lg border border-[#252C37] bg-[#0F1419] p-3 text-xs text-[#9CA3AF]">
+                    Need to edit the full template library?{' '}
+                    <button
+                      type="button"
+                      onClick={() => navigate('/accounting-setup/templates')}
+                      className="text-[#3B82F6] hover:underline"
+                    >
+                      Open Saved Templates
+                    </button>
+                    .
                   </div>
                 </div>
               </div>

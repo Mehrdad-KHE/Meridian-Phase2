@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import {
   Home,
@@ -20,12 +20,17 @@ interface SidebarProps {
 export function Sidebar({ engagementName }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [accountingSetupExpanded, setAccountingSetupExpanded] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const isActive = (path: string) => location.pathname === path;
   const isAccountingSetupActive = () =>
     location.pathname.startsWith('/accounting-setup') || location.pathname === '/vendors';
+  const isActive = (path: string) => location.pathname === path;
+  const [accountingSetupExpanded, setAccountingSetupExpanded] = useState(() => isAccountingSetupActive());
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (isAccountingSetupActive()) {
+      setAccountingSetupExpanded(true);
+    }
+  }, [location.pathname]);
 
   const sidebarContent = (
     <div className="h-full flex flex-col bg-[#1A1F28] border-r border-[#252C37]">

@@ -5,13 +5,12 @@ import {
   Download,
   FileText,
   Home,
-  Lock,
   MessageSquare,
   RotateCcw,
   Settings2,
 } from 'lucide-react';
 
-type RoadmapStageState = 'completed' | 'current' | 'accessible' | 'locked';
+type RoadmapStageState = 'completed' | 'current' | 'accessible';
 
 interface RoadmapStage {
   id: string;
@@ -19,7 +18,6 @@ interface RoadmapStage {
   route: string;
   state: RoadmapStageState;
   badge?: string | number;
-  tooltip?: string;
 }
 
 interface WorkflowRoadmapProps {
@@ -42,96 +40,99 @@ export function WorkflowRoadmap({ currentStage }: WorkflowRoadmapProps) {
       id: 'setup',
       label: 'Setup',
       route: '/setup/firm',
-      state: currentStage === 'setup' ? 'current' :
-             ['documents', 'processing', 'review', 'qa', 'export'].includes(currentStage) ? 'completed' : 'accessible',
+      state:
+        currentStage === 'setup'
+          ? 'current'
+          : ['documents', 'processing', 'review', 'qa', 'export'].includes(currentStage)
+            ? 'completed'
+            : 'accessible',
     },
     {
       id: 'documents',
       label: 'Documents',
       route: '/documents',
-      state: currentStage === 'documents' ? 'current' :
-             ['processing', 'review', 'qa', 'export'].includes(currentStage) ? 'completed' :
-             currentStage === 'setup' ? 'locked' : 'accessible',
-      tooltip: currentStage === 'setup' ? 'Complete setup first' : undefined,
+      state:
+        currentStage === 'documents'
+          ? 'current'
+          : ['processing', 'review', 'qa', 'export'].includes(currentStage)
+            ? 'completed'
+            : 'accessible',
     },
     {
       id: 'processing',
       label: 'Processing',
       route: '/processing',
-      state: currentStage === 'processing' ? 'current' :
-             ['review', 'qa', 'export'].includes(currentStage) ? 'completed' :
-             ['home', 'setup', 'documents'].includes(currentStage) ? 'locked' : 'accessible',
-      tooltip: ['home', 'setup', 'documents'].includes(currentStage) ? 'Upload documents first' : undefined,
+      state:
+        currentStage === 'processing'
+          ? 'current'
+          : ['review', 'qa', 'export'].includes(currentStage)
+            ? 'completed'
+            : 'accessible',
     },
     {
       id: 'review',
       label: 'Review',
       route: '/review',
-      state: currentStage === 'review' ? 'current' :
-             ['qa', 'export'].includes(currentStage) ? 'completed' :
-             ['home', 'setup', 'documents', 'processing'].includes(currentStage) ? 'locked' : 'accessible',
+      state:
+        currentStage === 'review'
+          ? 'current'
+          : ['qa', 'export'].includes(currentStage)
+            ? 'completed'
+            : 'accessible',
       badge: currentStage === 'review' ? 6 : undefined,
-      tooltip: ['home', 'setup', 'documents', 'processing'].includes(currentStage) ? 'Process documents first' : undefined,
     },
     {
       id: 'qa',
       label: 'Q&A',
       route: '/accountant-qa',
-      state: currentStage === 'qa' ? 'current' :
-             currentStage === 'export' ? 'completed' : 'locked',
-      tooltip: currentStage !== 'qa' && currentStage !== 'export' ? 'Complete review first' : undefined,
+      state: currentStage === 'qa' ? 'current' : currentStage === 'export' ? 'completed' : 'accessible',
     },
     {
       id: 'export',
       label: 'Export',
       route: '/export',
-      state: currentStage === 'export' ? 'current' : 'locked',
-      tooltip: currentStage !== 'export' ? 'Resolve review items first' : undefined,
+      state: currentStage === 'export' ? 'current' : 'accessible',
     },
   ];
 
   const handleStageClick = (stage: RoadmapStage) => {
-    if (stage.state !== 'locked') {
-      navigate(stage.route);
-    }
+    navigate(stage.route);
   };
 
   const getStageStyles = (state: RoadmapStageState) => {
     switch (state) {
       case 'completed':
         return {
-          wrapper: 'bg-gradient-to-b from-[#1D5A37] to-[#123B27] border-[#2EA44F] text-white shadow-[0_0_0_1px_rgba(46,164,79,0.35)]',
+          wrapper:
+            'bg-gradient-to-b from-[#1D5A37] to-[#123B27] border-[#2EA44F] text-white shadow-[0_0_0_1px_rgba(46,164,79,0.35)]',
           hover: 'hover:from-[#216442] hover:to-[#154330]',
           icon: <Check size={15} strokeWidth={2.5} className="text-[#A7F3D0]" />,
           subtitle: 'Complete',
-          clickable: true,
           glow: false,
         };
       case 'current':
         return {
-          wrapper: 'bg-gradient-to-b from-[#2F5FD6] to-[#1E3FA4] border-[#2563EB] text-white shadow-[0_10px_28px_rgba(59,130,246,0.38)] scale-[1.03]',
+          wrapper:
+            'bg-gradient-to-b from-[#2F5FD6] to-[#1E3FA4] border-[#2563EB] text-white shadow-[0_10px_28px_rgba(59,130,246,0.38)] scale-[1.03]',
           hover: '',
-          icon: <div className="h-5 w-5 rounded-full bg-white/20 border border-white/40 flex items-center justify-center text-[11px] font-bold">•</div>,
+          icon: (
+            <div className="h-5 w-5 rounded-full bg-white/20 border border-white/40 flex items-center justify-center text-[11px] font-bold">
+              •
+            </div>
+          ),
           subtitle: 'In Progress',
-          clickable: false,
           glow: true,
         };
       case 'accessible':
         return {
           wrapper: 'bg-[#293241] border-[#4B5563] text-[#E5E7EB]',
           hover: 'hover:border-[#3B82F6] hover:text-white hover:bg-[#2F3A4B]',
-          icon: <div className="h-5 w-5 rounded-full border border-current flex items-center justify-center text-[11px] font-bold">○</div>,
+          icon: (
+            <div className="h-5 w-5 rounded-full border border-current flex items-center justify-center text-[11px] font-bold">
+              ○
+            </div>
+          ),
           subtitle: 'Can proceed',
-          clickable: true,
-          glow: false,
-        };
-      case 'locked':
-        return {
-          wrapper: 'bg-[#1A1F28] border-[#6B7280] border-dashed text-[#9CA3AF] opacity-85',
-          hover: '',
-          icon: <Lock size={14} className="text-[#9CA3AF]" />,
-          subtitle: 'Locked',
-          clickable: false,
           glow: false,
         };
     }
@@ -169,13 +170,12 @@ export function WorkflowRoadmap({ currentStage }: WorkflowRoadmapProps) {
             <div key={stage.id} className={`relative ${index === 0 ? '' : '-ml-[14px]'}`}>
               <button
                 type="button"
-                onClick={() => styles.clickable && handleStageClick(stage)}
-                title={stage.tooltip}
+                onClick={() => handleStageClick(stage)}
                 className={`
                   relative w-[188px] text-left border px-6 py-3.5 transition-all duration-200
                   ${styles.wrapper}
                   ${styles.hover}
-                  ${styles.clickable ? 'cursor-pointer' : 'cursor-default'}
+                  cursor-pointer
                   ${stage.state === 'current' ? 'z-20' : 'z-10'}
                   ${styles.glow ? 'ring-2 ring-blue-400/25' : ''}
                 `}
@@ -197,19 +197,13 @@ export function WorkflowRoadmap({ currentStage }: WorkflowRoadmapProps) {
 
                   <div className="min-w-0">
                     <div className={`text-sm ${stage.state === 'current' ? 'font-semibold' : 'font-medium'}`}>{stage.label}</div>
-                    <div className={`text-xs ${stage.state === 'locked' ? 'text-[#9CA3AF]' : 'text-white/70'}`}>{styles.subtitle}</div>
+                    <div className={`text-xs ${stage.state === 'current' ? 'text-white/70' : 'text-white/70'}`}>{styles.subtitle}</div>
                   </div>
                 </div>
 
                 {stage.state === 'completed' && (
                   <div className="absolute right-3 bottom-3 text-[#34D399]">
                     <Check size={14} strokeWidth={3} />
-                  </div>
-                )}
-
-                {stage.state === 'locked' && (
-                  <div className="absolute right-3 bottom-3 text-[#9CA3AF]">
-                    <Lock size={14} />
                   </div>
                 )}
               </button>
@@ -224,8 +218,8 @@ export function WorkflowRoadmap({ currentStage }: WorkflowRoadmapProps) {
                       stage.state === 'completed'
                         ? 'rgba(16, 185, 129, 0.38)'
                         : stage.state === 'current'
-                        ? 'rgba(59, 130, 246, 0.6)'
-                        : 'rgba(75, 85, 99, 0.9)',
+                          ? 'rgba(59, 130, 246, 0.6)'
+                          : 'rgba(75, 85, 99, 0.9)',
                   }}
                 />
               )}

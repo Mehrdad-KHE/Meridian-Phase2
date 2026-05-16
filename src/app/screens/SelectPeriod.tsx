@@ -1,26 +1,114 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowRight, ArrowLeft } from 'lucide-react';
 import { WorkflowRoadmap } from '../components/WorkflowRoadmap';
+
+type PeriodType = 'annual' | 'q1' | 'q2' | 'q3' | 'q4' | 'h1' | 'h2' | 'monthly' | 'custom';
+
+const periodTypeOptions: Array<{ value: PeriodType; label: string }> = [
+  { value: 'annual', label: 'Annual / Full Year' },
+  { value: 'q1', label: 'Quarterly (Q1)' },
+  { value: 'q2', label: 'Quarterly (Q2)' },
+  { value: 'q3', label: 'Quarterly (Q3)' },
+  { value: 'q4', label: 'Quarterly (Q4)' },
+  { value: 'h1', label: 'Semi-Annual (H1)' },
+  { value: 'h2', label: 'Semi-Annual (H2)' },
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'custom', label: 'Custom Period' },
+];
+
+const monthOptions = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+function monthRange(month: string, fiscalYear: string) {
+  const index = monthOptions.indexOf(month);
+  if (index < 0) {
+    return '';
+  }
+  const date = new Date(Number(fiscalYear), index, 1);
+  const start = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const end = new Date(Number(fiscalYear), index + 1, 0).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  return `${start} - ${end}`;
+}
 
 export function SelectPeriod() {
   const navigate = useNavigate();
   const [fiscalYear, setFiscalYear] = useState('2025');
-  const [periodType, setPeriodType] = useState('Annual / Full Year');
+  const [periodType, setPeriodType] = useState<PeriodType>('annual');
+  const [month, setMonth] = useState('January');
+  const [customStart, setCustomStart] = useState('');
+  const [customEnd, setCustomEnd] = useState('');
 
-  const getPeriodDates = () => {
-    if (periodType === 'Annual / Full Year') {
-      return `January 1, ${fiscalYear} - December 31, ${fiscalYear}`;
+  const periodDates = useMemo(() => {
+    switch (periodType) {
+      case 'annual':
+        return `January 1, ${fiscalYear} - December 31, ${fiscalYear}`;
+      case 'q1':
+        return `January 1, ${fiscalYear} - March 31, ${fiscalYear}`;
+      case 'q2':
+        return `April 1, ${fiscalYear} - June 30, ${fiscalYear}`;
+      case 'q3':
+        return `July 1, ${fiscalYear} - September 30, ${fiscalYear}`;
+      case 'q4':
+        return `October 1, ${fiscalYear} - December 31, ${fiscalYear}`;
+      case 'h1':
+        return `January 1, ${fiscalYear} - June 30, ${fiscalYear}`;
+      case 'h2':
+        return `July 1, ${fiscalYear} - December 31, ${fiscalYear}`;
+      case 'monthly':
+        return monthRange(month, fiscalYear) || `Choose a month for ${fiscalYear}`;
+      case 'custom':
+        if (customStart && customEnd) {
+          return `${customStart} - ${customEnd}`;
+        }
+        return 'Custom period selected - enter start and end dates.';
     }
-    return 'Select period type to see dates';
-  };
+  }, [customEnd, customStart, fiscalYear, month, periodType]);
+
+  const canContinue = periodType !== 'custom' || Boolean(customStart && customEnd);
 
   return (
     <div className="min-h-screen bg-[#0F1419] text-[#F9FAFB]">
       <WorkflowRoadmap currentStage="setup" />
 
       <div className="max-w-4xl mx-auto p-8">
-        <h1 className="text-2xl font-semibold mb-6">Select Accounting Period</h1>
+        <div className="flex items-start justify-between gap-4 mb-6">
+          <button
+            onClick={() => navigate('/setup/client')}
+            className="inline-flex items-center gap-2 border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] py-2 px-4 rounded-lg text-sm font-medium"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
+          <div>
+            <h1 className="text-2xl font-semibold mb-2 text-center">Select Accounting Period</h1>
+            <p className="text-sm text-[#9CA3AF] text-center">Select the fiscal year and period</p>
+          </div>
+          <button
+            onClick={() => navigate('/documents')}
+            disabled={!canContinue}
+            className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] disabled:bg-[#374151] disabled:text-[#9CA3AF] text-white py-2.5 px-5 rounded-lg text-sm font-medium"
+          >
+            Continue to Documents
+            <ArrowRight size={16} />
+          </button>
+        </div>
 
         <div className="mb-4">
           <span className="text-sm bg-[#3B82F6] text-white px-3 py-1 rounded">ENGAGEMENT SETUP</span>
@@ -29,8 +117,6 @@ export function SelectPeriod() {
         <div className="bg-[#1A1F28] border-l-4 border-[#3B82F6] rounded p-4 mb-6">
           <p className="text-sm">Botax Accounting → Babak Mohammadhosseini</p>
         </div>
-
-        <p className="text-sm text-[#9CA3AF] mb-8">Select the fiscal year and period</p>
 
         <div className="space-y-6 mb-8">
           <div>
@@ -59,26 +145,69 @@ export function SelectPeriod() {
             <div className="relative">
               <select
                 value={periodType}
-                onChange={(e) => setPeriodType(e.target.value)}
+                onChange={(e) => setPeriodType(e.target.value as PeriodType)}
                 className="w-full bg-[#1A1F28] border border-[#374151] rounded px-4 py-3 text-sm focus:outline-none focus:border-[#3B82F6] appearance-none"
               >
-                <option>Annual / Full Year</option>
-                <option>Quarterly (Q1)</option>
-                <option>Quarterly (Q2)</option>
-                <option>Quarterly (Q3)</option>
-                <option>Quarterly (Q4)</option>
-                <option>Semi-Annual (H1)</option>
-                <option>Semi-Annual (H2)</option>
-                <option>Monthly</option>
-                <option>Custom Period</option>
+                {periodTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
               <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" size={16} />
             </div>
           </div>
 
+          {periodType === 'monthly' && (
+            <div>
+              <label className="block text-sm mb-2">
+                Month <span className="text-[#EF4444]">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  value={month}
+                  onChange={(e) => setMonth(e.target.value)}
+                  className="w-full bg-[#1A1F28] border border-[#374151] rounded px-4 py-3 text-sm focus:outline-none focus:border-[#3B82F6] appearance-none"
+                >
+                  {monthOptions.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" size={16} />
+              </div>
+            </div>
+          )}
+
+          {periodType === 'custom' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm mb-2">
+                  Start Date <span className="text-[#EF4444]">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={customStart}
+                  onChange={(e) => setCustomStart(e.target.value)}
+                  className="w-full bg-[#1A1F28] border border-[#374151] rounded px-4 py-3 text-sm focus:outline-none focus:border-[#3B82F6]"
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-2">
+                  End Date <span className="text-[#EF4444]">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={customEnd}
+                  onChange={(e) => setCustomEnd(e.target.value)}
+                  className="w-full bg-[#1A1F28] border border-[#374151] rounded px-4 py-3 text-sm focus:outline-none focus:border-[#3B82F6]"
+                />
+              </div>
+            </div>
+          )}
+
           <div className="bg-[#1A1F28] border border-[#374151] rounded p-4">
             <p className="text-sm text-[#D1D5DB]">
-              Period: <span className="font-medium">{getPeriodDates()}</span>
+              Period: <span className="font-medium">{periodDates}</span>
             </p>
           </div>
 
@@ -94,20 +223,6 @@ export function SelectPeriod() {
           </div>
         </div>
 
-        <div className="flex justify-between">
-          <button
-            onClick={() => navigate('/setup/client')}
-            className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] py-2 px-6 rounded-lg text-sm font-medium"
-          >
-            Back
-          </button>
-          <button
-            onClick={() => navigate('/documents')}
-            className="bg-[#3B82F6] hover:bg-[#2563EB] text-white py-2 px-6 rounded-lg text-sm font-medium"
-          >
-            Continue to Documents
-          </button>
-        </div>
       </div>
     </div>
   );

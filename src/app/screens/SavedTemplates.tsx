@@ -27,7 +27,7 @@ interface ExportTemplate {
 
 interface TemplateFormState extends ExportTemplate {}
 
-const engagementName = 'Botax Accounting -> Babak Mohammadhosseini -> 2025 Annual';
+const engagementName = 'Botax Accounting → Babak Mohammadhosseini → 2025 Annual';
 
 const formatLabels: Record<TemplateFormat, string> = {
   excel: 'Excel',
@@ -85,6 +85,7 @@ export function SavedTemplates() {
   const [editorMode, setEditorMode] = useState<'add' | 'edit'>('add');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<TemplateFormState>(emptyForm);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const filteredTemplates = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -183,8 +184,8 @@ export function SavedTemplates() {
   return (
     <Layout engagementName={engagementName}>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col overflow-hidden">
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6">
-          <p className="text-xs text-[#9CA3AF]">{engagementName}</p>
+        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
+          <p className="text-xs text-[#9CA3AF] text-center w-full">{engagementName}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -194,7 +195,7 @@ export function SavedTemplates() {
               className="inline-flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#F9FAFB] w-fit"
             >
               <ArrowLeft size={16} />
-              ← Back to Accounting Setup
+              Back to Accounting Setup
             </button>
 
             <div className="space-y-2">
@@ -363,7 +364,7 @@ export function SavedTemplates() {
                       Set as Default
                     </button>
                     <button
-                      onClick={() => deleteTemplate(selectedTemplate.id)}
+                      onClick={() => setDeleteConfirmId(selectedTemplate.id)}
                       className="w-full inline-flex items-center justify-center gap-2 border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium"
                     >
                       <Trash2 size={16} />
@@ -484,6 +485,37 @@ export function SavedTemplates() {
                 >
                   <Check size={16} />
                   Save Template
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {deleteConfirmId && (
+          <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
+            <div className="w-full max-w-md bg-[#1A1F28] border border-[#374151] rounded-2xl shadow-2xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#252C37]">
+                <h3 className="text-lg font-semibold">Delete template?</h3>
+                <p className="text-sm text-[#9CA3AF] mt-1">This removes the local template from the prototype only.</p>
+              </div>
+              <div className="px-5 py-4 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    deleteTemplate(deleteConfirmId);
+                    setDeleteConfirmId(null);
+                  }}
+                  className="inline-flex items-center gap-2 bg-[#EF4444] hover:bg-[#DC2626] text-white px-4 py-2.5 rounded-lg text-sm font-medium"
+                >
+                  <Trash2 size={16} />
+                  Delete
                 </button>
               </div>
             </div>

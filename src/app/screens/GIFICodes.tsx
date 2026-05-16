@@ -28,7 +28,7 @@ interface GIFICode {
 
 interface GIFIFormState extends GIFICode {}
 
-const engagementName = 'Botax Accounting -> Babak Mohammadhosseini -> 2025 Annual';
+const engagementName = 'Botax Accounting → Babak Mohammadhosseini → 2025 Annual';
 
 const typeTabs: Array<{ label: string; value: 'all' | GIFIType }> = [
   { label: 'All', value: 'all' },
@@ -217,8 +217,8 @@ export function GIFICodes() {
   return (
     <Layout engagementName={engagementName}>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col overflow-hidden">
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6">
-          <p className="text-xs text-[#9CA3AF]">{engagementName}</p>
+        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
+          <p className="text-xs text-[#9CA3AF] text-center w-full">{engagementName}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -228,7 +228,7 @@ export function GIFICodes() {
               className="inline-flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#F9FAFB] w-fit"
             >
               <ArrowLeft size={16} />
-              ← Back to Accounting Setup
+              Back to Accounting Setup
             </button>
 
             <div className="space-y-2">

@@ -29,7 +29,7 @@ interface CategoryMapping {
 
 interface MappingFormState extends CategoryMapping {}
 
-const engagementName = 'Botax Accounting -> Babak Mohammadhosseini -> 2025 Annual';
+const engagementName = 'Botax Accounting → Babak Mohammadhosseini → 2025 Annual';
 
 const taxTreatmentOptions: TaxTreatment[] = ['None', 'HST Included', 'GST Included', 'GST/HST Excluded'];
 
@@ -113,6 +113,7 @@ export function CategoryMapping() {
   const [editorMode, setEditorMode] = useState<'add' | 'edit'>('add');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<MappingFormState>(emptyForm);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const filteredMappings = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -188,8 +189,8 @@ export function CategoryMapping() {
   return (
     <Layout engagementName={engagementName}>
       <div className="h-screen bg-[#0F1419] text-[#F9FAFB] flex flex-col overflow-hidden">
-        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6">
-          <p className="text-xs text-[#9CA3AF]">{engagementName}</p>
+        <div className="bg-[#1A1F28] border-b border-[#374151] py-1.5 px-6 flex justify-center">
+          <p className="text-xs text-[#9CA3AF] text-center w-full">{engagementName}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -199,7 +200,7 @@ export function CategoryMapping() {
               className="inline-flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#F9FAFB] w-fit"
             >
               <ArrowLeft size={16} />
-              ← Back to Accounting Setup
+              Back to Accounting Setup
             </button>
 
             <div className="space-y-2">
@@ -293,7 +294,7 @@ export function CategoryMapping() {
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
-                              deleteMapping(mapping.id);
+                              setDeleteConfirmId(mapping.id);
                             }}
                             className="inline-flex items-center gap-1 text-xs border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-3 py-1.5 rounded"
                           >
@@ -485,6 +486,37 @@ export function CategoryMapping() {
                 >
                   <Check size={16} />
                   Save Mapping
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {deleteConfirmId && (
+          <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
+            <div className="w-full max-w-md bg-[#1A1F28] border border-[#374151] rounded-2xl shadow-2xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#252C37]">
+                <h3 className="text-lg font-semibold">Delete mapping?</h3>
+                <p className="text-sm text-[#9CA3AF] mt-1">This removes the local mapping from the prototype only.</p>
+              </div>
+              <div className="px-5 py-4 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    deleteMapping(deleteConfirmId);
+                    setDeleteConfirmId(null);
+                  }}
+                  className="inline-flex items-center gap-2 bg-[#EF4444] hover:bg-[#DC2626] text-white px-4 py-2.5 rounded-lg text-sm font-medium"
+                >
+                  <Trash2 size={16} />
+                  Delete
                 </button>
               </div>
             </div>
