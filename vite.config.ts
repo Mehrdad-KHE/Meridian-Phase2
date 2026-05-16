@@ -1,28 +1,43 @@
 import { defineConfig } from 'vite'
 import path from 'path'
+import { rmSync } from 'fs'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { viteSingleFile } from 'vite-plugin-singlefile'
 
 export default defineConfig({
   plugins: [
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
-    viteSingleFile(),
+    viteSingleFile({ removeViteModuleLoader: true }),
+    {
+      name: 'strip-dist-artifacts',
+      closeBundle() {
+        rmSync('dist/assets', { recursive: true, force: true })
+      },
+    },
   ],
   base: './',
   build: {
     assetsInlineLimit: 100000000,
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        passes: 2,
+      },
+      mangle: true,
+      format: {
+        comments: false,
+      },
+    },
   },
   resolve: {
     alias: {
-      // Alias @ to the src directory
       '@': path.resolve(__dirname, './src'),
     },
   },
-
-  // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })
