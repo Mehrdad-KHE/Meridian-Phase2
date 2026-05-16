@@ -1,13 +1,36 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ArrowLeft, CheckSquare, ChevronDown, ChevronUp, GripVertical, Layers3, Save, Search, Square, RotateCcw } from 'lucide-react';
+import {
+  ArrowLeft,
+  CheckSquare,
+  ChevronDown,
+  ChevronUp,
+  GripVertical,
+  Layers3,
+  Save,
+  Search,
+  Square,
+  X,
+} from 'lucide-react';
 import { Layout } from '../components/Layout';
 
-type ExportColumn = {
+type ExportFormat = 'Accountant Review Excel' | 'QuickBooks CSV' | 'Generic CSV';
+
+interface ExportColumn {
   id: string;
   label: string;
   enabled: boolean;
-};
+}
+
+interface ExportTemplate {
+  id: string;
+  name: string;
+  description: string;
+  format: ExportFormat;
+  columns: ExportColumn[];
+  default: boolean;
+  lastUsed: string;
+}
 
 const engagementName = 'Botax Accounting -> Babak Mohammadhosseini -> 2025 Annual';
 
@@ -21,33 +44,74 @@ const defaultColumns: ExportColumn[] = [
   { id: 'account_code', label: 'Account Code', enabled: true },
   { id: 'gifi_code', label: 'GIFI Code', enabled: true },
   { id: 'tax_flag', label: 'HST/GST Flag', enabled: true },
-  { id: 'confidence', label: 'Confidence Score', enabled: false },
+  { id: 'confidence_score', label: 'Confidence Score', enabled: false },
   { id: 'review_status', label: 'Review Status', enabled: true },
   { id: 'processing_date', label: 'Processing Date', enabled: false },
   { id: 'notes', label: 'Notes', enabled: true },
   { id: 'source_file', label: 'Source File', enabled: true },
-  { id: 'fingerprint', label: 'Document Fingerprint', enabled: false },
-  { id: 'qa_ref', label: 'Accountant Question Reference', enabled: true },
+  { id: 'document_fingerprint', label: 'Document Fingerprint', enabled: false },
+  { id: 'question_reference', label: 'Accountant Question Reference', enabled: true },
 ];
 
-const templates = [
-  { name: 'Default Excel Template', format: 'Excel', description: 'Standard accountant review layout' },
-  { name: 'QuickBooks Import', format: 'CSV', description: 'Import-ready QuickBooks columns' },
-  { name: 'Draft Review', format: 'Excel', description: 'Compact internal review pack' },
+const initialTemplates: ExportTemplate[] = [
+  {
+    id: 'default-review',
+    name: 'Default Excel Template',
+    description: 'Standard accountant review layout',
+    format: 'Accountant Review Excel',
+    columns: defaultColumns.map((column) => ({ ...column })),
+    default: true,
+    lastUsed: '2026-05-12',
+  },
+  {
+    id: 'quickbooks-csv',
+    name: 'QuickBooks Import',
+    description: 'Import-ready QuickBooks columns',
+    format: 'QuickBooks CSV',
+    columns: defaultColumns
+      .filter((column) => column.enabled)
+      .map((column) => ({ ...column })),
+    default: false,
+    lastUsed: '2026-05-10',
+  },
+  {
+    id: 'draft-review',
+    name: 'Draft Review',
+    description: 'Compact internal review pack',
+    format: 'Generic CSV',
+    columns: defaultColumns.map((column) => ({ ...column })),
+    default: false,
+    lastUsed: '2026-05-08',
+  },
 ];
+
+function cloneColumns(columns: ExportColumn[]) {
+  return columns.map((column) => ({ ...column }));
+}
 
 export function ExportMapping() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const [columns, setColumns] = useState(defaultColumns);
-  const [selectedTemplate, setSelectedTemplate] = useState(templates[0].name);
+  const [columns, setColumns] = useState(cloneColumns(defaultColumns));
+  const [appliedColumns, setAppliedColumns] = useState(cloneColumns(defaultColumns));
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('Accountant Review Excel');
+  const [appliedExportFormat, setAppliedExportFormat] = useState<ExportFormat>('Accountant Review Excel');
   const [templateName, setTemplateName] = useState('Default Excel Template');
+  const [appliedTemplateName, setAppliedTemplateName] = useState('Default Excel Template');
   const [description, setDescription] = useState('Standard accountant review');
+  const [appliedDescription, setAppliedDescription] = useState('Standard accountant review');
+  const [templates, setTemplates] = useState<ExportTemplate[]>(initialTemplates);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(initialTemplates[0].id);
+  const [templateMenuOpen, setTemplateMenuOpen] = useState(false);
+  const [reorderOpen, setReorderOpen] = useState(false);
+  const [message, setMessage] = useState('Export settings are local to the prototype until applied.');
 
   const filteredColumns = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return columns.filter((column) => column.label.toLowerCase().includes(query) || column.id.toLowerCase().includes(query));
+    return columns.filter((column) => column.label.toLowerCase().includes(query) || column.id.includes(query));
   }, [columns, search]);
+
+  const selectedTemplate = templates.find((template) => template.id === selectedTemplateId) ?? templates[0];
 
   const toggleColumn = (id: string) => {
     setColumns((current) => current.map((column) => (column.id === id ? { ...column, enabled: !column.enabled } : column)));
@@ -56,7 +120,9 @@ export function ExportMapping() {
   const moveColumn = (index: number, direction: -1 | 1) => {
     setColumns((current) => {
       const nextIndex = index + direction;
-      if (nextIndex < 0 || nextIndex >= current.length) return current;
+      if (nextIndex < 0 || nextIndex >= current.length) {
+        return current;
+      }
       const next = [...current];
       const [item] = next.splice(index, 1);
       next.splice(nextIndex, 0, item);
@@ -66,10 +132,67 @@ export function ExportMapping() {
 
   const selectAll = () => {
     setColumns((current) => current.map((column) => ({ ...column, enabled: true })));
+    setMessage('All export columns enabled locally.');
   };
 
-  const resetColumns = () => {
-    setColumns(defaultColumns);
+  const resetToDefault = () => {
+    const reset = cloneColumns(defaultColumns);
+    setColumns(reset);
+    setTemplateName('Default Excel Template');
+    setDescription('Standard accountant review');
+    setExportFormat('Accountant Review Excel');
+    setMessage('Draft reset to default local values.');
+  };
+
+  const saveAsNewTemplate = () => {
+    const id = `template-${Date.now()}`;
+    const newTemplate: ExportTemplate = {
+      id,
+      name: templateName.trim() || 'Untitled Template',
+      description: description.trim() || 'Saved from export configuration',
+      format: exportFormat,
+      columns: cloneColumns(columns),
+      default: false,
+      lastUsed: 'Just now',
+    };
+
+    setTemplates((current) => [newTemplate, ...current.map((template) => ({ ...template, default: template.default }))]);
+    setSelectedTemplateId(id);
+    setMessage(`${newTemplate.name} saved locally.`);
+  };
+
+  const loadTemplate = (template: ExportTemplate) => {
+    setColumns(cloneColumns(template.columns));
+    setAppliedColumns(cloneColumns(template.columns));
+    setExportFormat(template.format);
+    setAppliedExportFormat(template.format);
+    setTemplateName(template.name);
+    setAppliedTemplateName(template.name);
+    setDescription(template.description);
+    setAppliedDescription(template.description);
+    setSelectedTemplateId(template.id);
+    setMessage(`${template.name} loaded into the draft.`);
+    setTemplateMenuOpen(false);
+  };
+
+  const applyConfiguration = () => {
+    setAppliedColumns(cloneColumns(columns));
+    setAppliedExportFormat(exportFormat);
+    setAppliedTemplateName(templateName);
+    setAppliedDescription(description);
+    setMessage('Export configuration applied locally for the next export.');
+    setReorderOpen(false);
+    setTemplateMenuOpen(false);
+  };
+
+  const cancelChanges = () => {
+    setColumns(cloneColumns(appliedColumns));
+    setExportFormat(appliedExportFormat);
+    setTemplateName(appliedTemplateName);
+    setDescription(appliedDescription);
+    setMessage('Unapplied changes were reverted locally.');
+    setReorderOpen(false);
+    setTemplateMenuOpen(false);
   };
 
   return (
@@ -86,45 +209,76 @@ export function ExportMapping() {
               className="inline-flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#F9FAFB] w-fit"
             >
               <ArrowLeft size={16} />
-              Back to Accounting Setup
+              ← Back to Accounting Setup
             </button>
 
             <div className="space-y-2">
               <h1 className="text-2xl font-semibold">Export Configuration</h1>
               <p className="text-sm text-[#9CA3AF] max-w-3xl">
-                Configure export format and the columns included in the accountant review or import-style workbook.
+                Adjust export format and column order locally for the prototype review and export flow.
               </p>
             </div>
+
+            {message && (
+              <div className="bg-[#3B82F6]/10 border border-[#3B82F6]/30 text-[#DBEAFE] rounded-lg px-4 py-3 text-sm">
+                {message}
+              </div>
+            )}
 
             <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
               <div className="relative flex-1 max-w-xl">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
                 <input
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search export columns"
                   className="w-full bg-[#1A1F28] border border-[#252C37] rounded-lg pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:border-[#3B82F6]"
                 />
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                <button className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white px-4 py-2.5 rounded-lg text-sm font-medium">
+              <div className="flex flex-wrap gap-2 relative">
+                <button
+                  onClick={saveAsNewTemplate}
+                  className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white px-4 py-2.5 rounded-lg text-sm font-medium"
+                >
                   <Save size={16} />
-                  Save as Template
+                  Save as New Template
                 </button>
-                <button className="inline-flex items-center gap-2 border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium">
-                  <Layers3 size={16} />
-                  Load Template
-                </button>
+
+                <div className="relative">
+                  <button
+                    onClick={() => setTemplateMenuOpen((current) => !current)}
+                    className="inline-flex items-center gap-2 border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium"
+                  >
+                    <Layers3 size={16} />
+                    Load Template
+                    <ChevronDown size={14} />
+                  </button>
+
+                  {templateMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-64 rounded-lg border border-[#374151] bg-[#1A1F28] shadow-2xl z-20 overflow-hidden">
+                      {templates.map((template) => (
+                        <button
+                          key={template.id}
+                          onClick={() => loadTemplate(template)}
+                          className="w-full text-left px-4 py-3 hover:bg-[#252C37] border-b border-[#252C37] last:border-b-0"
+                        >
+                          <p className="text-sm font-medium">{template.name}</p>
+                          <p className="text-xs text-[#6B7280]">{template.format}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-[1.3fr_0.95fr] gap-4 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_0.95fr] gap-4 items-start">
               <div className="bg-[#1A1F28] border border-[#252C37] rounded-lg overflow-hidden">
                 <div className="px-4 py-3 border-b border-[#252C37] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <h2 className="text-sm font-semibold">Columns</h2>
-                    <p className="text-xs text-[#6B7280]">Toggle columns on or off and move them into the preferred order.</p>
+                    <p className="text-xs text-[#6B7280]">Toggle columns and open the reorder modal for the full pipeline order.</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <button
@@ -135,57 +289,49 @@ export function ExportMapping() {
                       Select All
                     </button>
                     <button
-                      onClick={resetColumns}
+                      onClick={() => setReorderOpen(true)}
                       className="inline-flex items-center gap-2 border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-3 py-1.5 rounded text-xs font-medium"
                     >
-                      <RotateCcw size={14} />
+                      <GripVertical size={14} />
+                      Reorder Columns
+                    </button>
+                    <button
+                      onClick={resetToDefault}
+                      className="inline-flex items-center gap-2 border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-3 py-1.5 rounded text-xs font-medium"
+                    >
+                      <ChevronUp size={14} />
                       Reset to Default
                     </button>
                   </div>
                 </div>
 
                 <div className="divide-y divide-[#252C37]">
-                  {filteredColumns.map((column) => {
-                    const index = columns.findIndex((item) => item.id === column.id);
-                    return (
-                      <div key={column.id} className="flex items-center gap-3 px-4 py-3">
-                        <button
-                          type="button"
-                          aria-label={`Move ${column.label}`}
-                          className="text-[#6B7280] hover:text-[#F9FAFB] cursor-grab"
-                        >
-                          <GripVertical size={16} />
-                        </button>
+                  {filteredColumns.map((column) => (
+                    <div key={column.id} className="flex items-center gap-3 px-4 py-3">
+                      <button
+                        type="button"
+                        aria-label={`Toggle ${column.label}`}
+                        onClick={() => toggleColumn(column.id)}
+                        className="text-[#3B82F6] shrink-0"
+                      >
+                        {column.enabled ? <CheckSquare size={18} /> : <Square size={18} />}
+                      </button>
 
-                        <button
-                          onClick={() => toggleColumn(column.id)}
-                          className="text-[#3B82F6] shrink-0"
-                        >
-                          {column.enabled ? <CheckSquare size={18} /> : <Square size={18} />}
-                        </button>
-
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium">{column.label}</p>
-                          <p className="text-xs text-[#6B7280]">{column.id.replace(/_/g, ' ')}</p>
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => moveColumn(index, -1)}
-                            className="p-2 rounded border border-[#374151] hover:bg-[#374151] text-[#D1D5DB]"
-                          >
-                            <ChevronUp size={14} />
-                          </button>
-                          <button
-                            onClick={() => moveColumn(index, 1)}
-                            className="p-2 rounded border border-[#374151] hover:bg-[#374151] text-[#D1D5DB]"
-                          >
-                            <ChevronDown size={14} />
-                          </button>
-                        </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">{column.label}</p>
+                        <p className="text-xs text-[#6B7280]">{column.id.replace(/_/g, ' ')}</p>
                       </div>
-                    );
-                  })}
+
+                      <button
+                        onClick={() => setMessage(`${column.label} toggled locally.`)}
+                        className="text-[#6B7280] hover:text-[#F9FAFB] cursor-grab"
+                        type="button"
+                        aria-label={`Move ${column.label}`}
+                      >
+                        <GripVertical size={16} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -194,7 +340,11 @@ export function ExportMapping() {
                   <div className="space-y-3">
                     <label className="space-y-1 block">
                       <span className="text-sm text-[#9CA3AF]">Export format</span>
-                      <select className="w-full bg-[#0F1419] border border-[#374151] rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#3B82F6]">
+                      <select
+                        value={exportFormat}
+                        onChange={(event) => setExportFormat(event.target.value as ExportFormat)}
+                        className="w-full bg-[#0F1419] border border-[#374151] rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#3B82F6]"
+                      >
                         <option>Accountant Review Excel</option>
                         <option>QuickBooks CSV</option>
                         <option>Generic CSV</option>
@@ -202,23 +352,10 @@ export function ExportMapping() {
                     </label>
 
                     <label className="space-y-1 block">
-                      <span className="text-sm text-[#9CA3AF]">Load template</span>
-                      <select
-                        value={selectedTemplate}
-                        onChange={(e) => setSelectedTemplate(e.target.value)}
-                        className="w-full bg-[#0F1419] border border-[#374151] rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#3B82F6]"
-                      >
-                        {templates.map((template) => (
-                          <option key={template.name}>{template.name}</option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label className="space-y-1 block">
                       <span className="text-sm text-[#9CA3AF]">Template name</span>
                       <input
                         value={templateName}
-                        onChange={(e) => setTemplateName(e.target.value)}
+                        onChange={(event) => setTemplateName(event.target.value)}
                         className="w-full bg-[#0F1419] border border-[#374151] rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#3B82F6]"
                       />
                     </label>
@@ -227,7 +364,7 @@ export function ExportMapping() {
                       <span className="text-sm text-[#9CA3AF]">Description</span>
                       <textarea
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={(event) => setDescription(event.target.value)}
                         rows={3}
                         className="w-full bg-[#0F1419] border border-[#374151] rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#3B82F6]"
                       />
@@ -235,31 +372,50 @@ export function ExportMapping() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 mt-5">
-                    <button className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white px-4 py-2.5 rounded-lg text-sm font-medium">
+                    <button
+                      onClick={cancelChanges}
+                      className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={applyConfiguration}
+                      className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white px-4 py-2.5 rounded-lg text-sm font-medium"
+                    >
                       <Save size={16} />
                       Apply Configuration
-                    </button>
-                    <button className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium">
-                      Cancel
                     </button>
                   </div>
                 </div>
 
                 <div className="bg-[#1A1F28] border border-[#252C37] rounded-lg p-5">
-                  <h3 className="text-sm font-semibold mb-3">Selected template preview</h3>
-                  <div className="space-y-2 text-sm text-[#9CA3AF]">
+                  <h3 className="text-sm font-semibold mb-3">Saved templates</h3>
+                  <div className="space-y-2 text-sm">
                     {templates.map((template) => (
-                      <div
-                        key={template.name}
-                        className={`p-3 rounded border ${
-                          selectedTemplate === template.name
+                      <button
+                        key={template.id}
+                        onClick={() => setSelectedTemplateId(template.id)}
+                        className={`w-full text-left p-3 rounded border transition-colors ${
+                          selectedTemplateId === template.id
                             ? 'border-[#3B82F6] bg-[#3B82F6]/10'
-                            : 'border-[#252C37] bg-[#0F1419]'
+                            : 'border-[#252C37] hover:border-[#374151] bg-[#0F1419]'
                         }`}
                       >
-                        <p className="text-[#F9FAFB] font-medium">{template.name}</p>
-                        <p className="text-xs text-[#6B7280]">{template.format} - {template.description}</p>
-                      </div>
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-[#F9FAFB] font-medium">{template.name}</p>
+                            <p className="text-xs text-[#6B7280]">
+                              {template.format} · Last used {template.lastUsed}
+                            </p>
+                          </div>
+                          {template.default && (
+                            <span className="text-[10px] uppercase tracking-wide px-2 py-1 rounded bg-[#10B981]/10 text-[#10B981]">
+                              Default
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-[#9CA3AF] mt-2">{template.description}</p>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -267,6 +423,75 @@ export function ExportMapping() {
             </div>
           </div>
         </div>
+
+        {reorderOpen && (
+          <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
+            <div className="w-full max-w-2xl bg-[#1A1F28] border border-[#374151] rounded-2xl shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[#252C37]">
+                <div>
+                  <p className="text-xs text-[#9CA3AF]">Column reorder</p>
+                  <h3 className="text-lg font-semibold">Reorder Export Columns</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setReorderOpen(false)}
+                  className="p-2 rounded-full hover:bg-[#252C37] text-[#D1D5DB]"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="p-5">
+                <p className="text-sm text-[#9CA3AF] mb-4">Drag-handle style list with manual up/down controls for the prototype.</p>
+                <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+                  {columns.map((column, index) => (
+                    <div key={column.id} className="flex items-center gap-3 bg-[#0F1419] border border-[#252C37] rounded-lg px-4 py-3">
+                      <GripVertical size={16} className="text-[#6B7280]" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">{column.label}</p>
+                        <p className="text-xs text-[#6B7280]">{column.id.replace(/_/g, ' ')}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => moveColumn(index, -1)}
+                          className="p-2 rounded border border-[#374151] hover:bg-[#374151] text-[#D1D5DB]"
+                        >
+                          <ChevronUp size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveColumn(index, 1)}
+                          className="p-2 rounded border border-[#374151] hover:bg-[#374151] text-[#D1D5DB]"
+                        >
+                          <ChevronDown size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="px-5 py-4 border-t border-[#252C37] flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setReorderOpen(false)}
+                  className="border border-[#374151] hover:bg-[#374151] text-[#D1D5DB] px-4 py-2.5 rounded-lg text-sm font-medium"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={applyConfiguration}
+                  className="inline-flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white px-4 py-2.5 rounded-lg text-sm font-medium"
+                >
+                  <Save size={16} />
+                  Apply Order
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

@@ -1,5 +1,15 @@
 import { useNavigate } from 'react-router';
-import { Check, Circle, Lock, ChevronRight } from 'lucide-react';
+import {
+  Check,
+  ClipboardList,
+  Download,
+  FileText,
+  Home,
+  Lock,
+  MessageSquare,
+  RotateCcw,
+  Settings2,
+} from 'lucide-react';
 
 type RoadmapStageState = 'completed' | 'current' | 'accessible' | 'locked';
 
@@ -15,6 +25,8 @@ interface RoadmapStage {
 interface WorkflowRoadmapProps {
   currentStage: string;
 }
+
+const stageShape = 'polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%)';
 
 export function WorkflowRoadmap({ currentStage }: WorkflowRoadmapProps) {
   const navigate = useNavigate();
@@ -88,79 +100,134 @@ export function WorkflowRoadmap({ currentStage }: WorkflowRoadmapProps) {
     switch (state) {
       case 'completed':
         return {
-          container: 'bg-[#10B981]/10 border-[#10B981]/40 text-[#10B981]',
-          hover: 'hover:bg-[#10B981]/20 hover:border-[#10B981]/60',
-          icon: <Check size={14} strokeWidth={2.5} className="text-[#10B981]" />,
-          connector: 'text-[#10B981]/40',
+          wrapper: 'bg-gradient-to-b from-[#1D5A37] to-[#123B27] border-[#2EA44F] text-white shadow-[0_0_0_1px_rgba(46,164,79,0.35)]',
+          hover: 'hover:from-[#216442] hover:to-[#154330]',
+          icon: <Check size={15} strokeWidth={2.5} className="text-[#A7F3D0]" />,
+          subtitle: 'Complete',
           clickable: true,
+          glow: false,
         };
       case 'current':
         return {
-          container: 'bg-[#3B82F6] border-[#3B82F6] text-white shadow-[0_0_0_3px_rgba(59,130,246,0.12)]',
+          wrapper: 'bg-gradient-to-b from-[#2F5FD6] to-[#1E3FA4] border-[#2563EB] text-white shadow-[0_10px_28px_rgba(59,130,246,0.38)] scale-[1.03]',
           hover: '',
-          icon: <Circle size={8} fill="white" strokeWidth={0} className="text-white" />,
-          connector: 'text-[#3B82F6]/60',
+          icon: <div className="h-5 w-5 rounded-full bg-white/20 border border-white/40 flex items-center justify-center text-[11px] font-bold">•</div>,
+          subtitle: 'In Progress',
           clickable: false,
+          glow: true,
         };
       case 'accessible':
         return {
-          container: 'bg-[#252C37] border-[#374151] text-[#9CA3AF]',
-          hover: 'hover:border-[#4B5563] hover:bg-[#252C37]',
-          icon: <Circle size={8} className="text-[#6B7280]" />,
-          connector: 'text-[#374151]',
+          wrapper: 'bg-[#293241] border-[#4B5563] text-[#E5E7EB]',
+          hover: 'hover:border-[#3B82F6] hover:text-white hover:bg-[#2F3A4B]',
+          icon: <div className="h-5 w-5 rounded-full border border-current flex items-center justify-center text-[11px] font-bold">○</div>,
+          subtitle: 'Can proceed',
           clickable: true,
+          glow: false,
         };
       case 'locked':
         return {
-          container: 'bg-[#1A1F28] border-[#2D3748] text-[#4B5563]',
+          wrapper: 'bg-[#1A1F28] border-[#6B7280] border-dashed text-[#9CA3AF] opacity-85',
           hover: '',
-          icon: <Lock size={12} className="text-[#4B5563]" />,
-          connector: 'text-[#374151]',
+          icon: <Lock size={14} className="text-[#9CA3AF]" />,
+          subtitle: 'Locked',
           clickable: false,
+          glow: false,
         };
+    }
+  };
+
+  const stageIcon = (stageId: string) => {
+    switch (stageId) {
+      case 'home':
+        return <Home size={18} />;
+      case 'setup':
+        return <Settings2 size={18} />;
+      case 'documents':
+        return <FileText size={18} />;
+      case 'processing':
+        return <RotateCcw size={18} />;
+      case 'review':
+        return <ClipboardList size={18} />;
+      case 'qa':
+        return <MessageSquare size={18} />;
+      case 'export':
+        return <Download size={18} />;
+      default:
+        return <FileText size={18} />;
     }
   };
 
   return (
     <div className="bg-[#0F1419] border-b border-[#1F2937] overflow-x-auto">
-      <div className="flex items-center justify-start gap-2 max-w-6xl mx-auto py-4 px-6 min-w-max">
+      <div className="flex items-center gap-0 max-w-6xl mx-auto py-4 px-6 min-w-max">
         {stages.map((stage, index) => {
           const styles = getStageStyles(stage.state);
           const isLast = index === stages.length - 1;
 
           return (
-            <div key={stage.id} className="flex items-center gap-2">
+            <div key={stage.id} className={`relative ${index === 0 ? '' : '-ml-[14px]'}`}>
               <button
                 type="button"
                 onClick={() => styles.clickable && handleStageClick(stage)}
                 title={stage.tooltip}
                 className={`
-                  relative inline-flex items-center gap-2 rounded-full border px-4 py-2
-                  ${styles.container}
+                  relative w-[188px] text-left border px-6 py-3.5 transition-all duration-200
+                  ${styles.wrapper}
                   ${styles.hover}
                   ${styles.clickable ? 'cursor-pointer' : 'cursor-default'}
-                  ${stage.state === 'current' ? 'px-5 py-2.5' : ''}
-                  transition-all duration-200
-                  min-w-[92px]
+                  ${stage.state === 'current' ? 'z-20' : 'z-10'}
+                  ${styles.glow ? 'ring-2 ring-blue-400/25' : ''}
                 `}
+                style={{
+                  clipPath: stageShape,
+                  WebkitClipPath: stageShape,
+                }}
               >
                 {stage.badge && (
-                  <div className="absolute -top-1 -right-1 bg-[#F59E0B] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold ring-2 ring-[#1A1F28] shadow-sm">
+                  <div className="absolute right-3 top-3 bg-[#F59E0B] text-white rounded-full w-6 h-6 flex items-center justify-center text-[11px] font-bold shadow-sm">
                     {stage.badge}
                   </div>
                 )}
 
-                <span className="flex items-center justify-center shrink-0">
-                  {styles.icon}
-                </span>
+                <div className="flex items-start gap-3 pr-8">
+                  <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/10">
+                    {stageIcon(stage.id)}
+                  </div>
 
-                <span className={`text-sm whitespace-nowrap ${stage.state === 'current' ? 'font-semibold' : 'font-medium'}`}>
-                  {stage.label}
-                </span>
+                  <div className="min-w-0">
+                    <div className={`text-sm ${stage.state === 'current' ? 'font-semibold' : 'font-medium'}`}>{stage.label}</div>
+                    <div className={`text-xs ${stage.state === 'locked' ? 'text-[#9CA3AF]' : 'text-white/70'}`}>{styles.subtitle}</div>
+                  </div>
+                </div>
+
+                {stage.state === 'completed' && (
+                  <div className="absolute right-3 bottom-3 text-[#34D399]">
+                    <Check size={14} strokeWidth={3} />
+                  </div>
+                )}
+
+                {stage.state === 'locked' && (
+                  <div className="absolute right-3 bottom-3 text-[#9CA3AF]">
+                    <Lock size={14} />
+                  </div>
+                )}
               </button>
 
               {!isLast && (
-                <ChevronRight size={16} className={`shrink-0 ${styles.connector}`} />
+                <div
+                  className="pointer-events-none absolute top-0 right-[-1px] h-full w-[20px]"
+                  aria-hidden="true"
+                  style={{
+                    clipPath: 'polygon(0 0, 100% 50%, 0 100%)',
+                    background:
+                      stage.state === 'completed'
+                        ? 'rgba(16, 185, 129, 0.38)'
+                        : stage.state === 'current'
+                        ? 'rgba(59, 130, 246, 0.6)'
+                        : 'rgba(75, 85, 99, 0.9)',
+                  }}
+                />
               )}
             </div>
           );
