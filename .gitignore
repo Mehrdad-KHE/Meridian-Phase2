@@ -33,3 +33,4 @@ Thumbs.db
 bridge/
 meridian-demo.zip
 *.zip
+!meridian-demo.zip
