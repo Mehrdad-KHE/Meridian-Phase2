@@ -30,3 +30,6 @@ Thumbs.db
 
 # Claude harness worktrees — runtime only, never tracked
 .claude/worktrees/
+bridge/
+meridian-demo.zip
+*.zip
