@@ -107,7 +107,7 @@ Key Behaviors:
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│ [Botax Accounting] → [Babak Mohammadhosseini] → [2025 Annual] │
+│ [Northpeak Accounting] → [Daniel Roberts] → [2025 Annual] │
 └────────────────────────────────────────────────────────┘
 ```
 
@@ -808,7 +808,7 @@ Home → Setup → Documents → Processing → Review → Q&A → Export
 
 **Shows**:
 ```
-[Botax Accounting] → [Babak Mohammadhosseini] → [2025 Annual]
+[Northpeak Accounting] → [Daniel Roberts] → [2025 Annual]
 ```
 
 **Behavior**:
@@ -891,7 +891,7 @@ or
 │  Recent Engagements:                              │
 │                                                    │
 │  ┌────────────────────────────────────────────┐  │
-│  │ Babak Mohammadhosseini - 2025 Annual      │  │
+│  │ Daniel Roberts - 2025 Annual      │  │
 │  │ Status: Review 6 items                     │  │
 │  │ [Continue] #3B82F6                         │  │
 │  └────────────────────────────────────────────┘  │

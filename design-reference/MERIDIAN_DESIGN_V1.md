@@ -70,7 +70,7 @@ END
 ### Context Bar (top of every screen after setup)
 ```
 ┌────────────────────────────────────────────────────────┐
-│ Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│ Northpeak Accounting → Daniel Roberts → 2025 Annual│
 └────────────────────────────────────────────────────────┘
 ```
 
@@ -97,7 +97,7 @@ END
 │  Recent Engagements                              │
 │                                                  │
 │  ┌────────────────────────────────────────────┐ │
-│  │ Babak Mohammadhosseini                     │ │
+│  │ Daniel Roberts                     │ │
 │  │ 2025 Annual                                │ │
 │  │ Status: Review 6 items                     │ │
 │  │ [Continue]                                 │ │
@@ -148,7 +148,7 @@ END
 │  Select a firm or add a new one                 │
 │                                                  │
 │  ┌────────────────────────────────────────────┐ │
-│  │ Botax Accounting                           │ │
+│  │ Northpeak Accounting                           │ │
 │  │ Toronto, ON                                │ │
 │  │ [Select Firm]                              │ │
 │  └────────────────────────────────────────────┘ │
@@ -203,12 +203,12 @@ END
 │  Select Client                                   │
 ├──────────────────────────────────────────────────┤
 │                                                  │
-│  Botax Accounting                               │
+│  Northpeak Accounting                               │
 │                                                  │
 │  Select a client or add a new one               │
 │                                                  │
 │  ┌────────────────────────────────────────────┐ │
-│  │ Babak Mohammadhosseini                     │ │
+│  │ Daniel Roberts                     │ │
 │  │ Self-employed contractor                   │ │
 │  │ [Select Client]                            │ │
 │  └────────────────────────────────────────────┘ │
@@ -269,7 +269,7 @@ END
 │  Select Accounting Period                        │
 ├──────────────────────────────────────────────────┤
 │                                                  │
-│  Botax Accounting → Babak Mohammadhosseini      │
+│  Northpeak Accounting → Daniel Roberts      │
 │                                                  │
 │  Select the fiscal year and period              │
 │                                                  │
@@ -308,7 +308,7 @@ END
 **Wireframe**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Documents                                       │
 ├──────────────────────────────────────────────────┤
@@ -330,7 +330,7 @@ END
 **After Upload**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Documents                                       │
 ├──────────────────────────────────────────────────┤
@@ -386,7 +386,7 @@ END
 **Wireframe**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Processing                                      │
 ├──────────────────────────────────────────────────┤
@@ -414,7 +414,7 @@ END
 **Processing Complete**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Processing Complete                             │
 ├──────────────────────────────────────────────────┤
@@ -454,7 +454,7 @@ END
 **Wireframe**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Review                                          │
 ├──────────────────────────────────────────────────┤
@@ -518,7 +518,7 @@ END
 **Review Queue Empty**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Review                                          │
 ├──────────────────────────────────────────────────┤
@@ -543,7 +543,7 @@ END
 **Wireframe**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Accountant Q&A                                  │
 ├──────────────────────────────────────────────────┤
@@ -627,7 +627,7 @@ END
 **Wireframe (Ready)**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Export                                          │
 ├──────────────────────────────────────────────────┤
@@ -657,7 +657,7 @@ END
 **Wireframe (Needs Attention)**:
 ```
 ┌──────────────────────────────────────────────────┐
-│  Botax Accounting → Babak Mohammadhosseini → 2025 Annual│
+│  Northpeak Accounting → Daniel Roberts → 2025 Annual│
 ├──────────────────────────────────────────────────┤
 │  Export                                          │
 ├──────────────────────────────────────────────────┤

@@ -29,8 +29,8 @@
 ┃  Recent Engagements                                               ┃
 ┃                                                                    ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax Accounting                                         ┃  ┃
-┃  ┃ Babak Mohammadhosseini → 2025 Annual                     ┃  ┃
+┃  ┃ Northpeak Accounting                                         ┃  ┃
+┃  ┃ Daniel Roberts → 2025 Annual                     ┃  ┃
 ┃  ┃ Status: Review 6 items  #F59E0B (amber warning)          ┃  ┃
 ┃  ┃ Last activity: 2026-05-10 14:32                          ┃  ┃
 ┃  ┃                                                           ┃  ┃
@@ -38,7 +38,7 @@
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                                    ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax Accounting                                         ┃  ┃
+┃  ┃ Northpeak Accounting                                         ┃  ┃
 ┃  ┃ Smith LLC → Q4 2024                                      ┃  ┃
 ┃  ┃ Status: Ready to export  #10B981 (green success)        ┃  ┃
 ┃  ┃ Last activity: 2026-05-09 10:15                          ┃  ┃
@@ -47,7 +47,7 @@
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                                    ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax Accounting                                         ┃  ┃
+┃  ┃ Northpeak Accounting                                         ┃  ┃
 ┃  ┃ Johnson Inc → 2024 Annual                                ┃  ┃
 ┃  ┃ Status: Processing documents  #3B82F6 (blue)            ┃  ┃
 ┃  ┃ Last activity: 2026-05-11 09:22                          ┃  ┃

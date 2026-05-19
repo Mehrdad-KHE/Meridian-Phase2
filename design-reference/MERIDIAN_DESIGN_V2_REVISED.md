@@ -79,7 +79,7 @@ User can:
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│ [Botax Accounting] → [Babak Mohammadhosseini] → [2025 Annual] │
+│ [Northpeak Accounting] → [Daniel Roberts] → [2025 Annual] │
 └────────────────────────────────────────────────────────┘
 ```
 
@@ -309,9 +309,9 @@ Three main sections:
 - After Period: [Continue to Documents]
 
 **Context Bar Building:**
-- After Firm selected: `[Botax Accounting]`
-- After Client selected: `[Botax Accounting] → [Babak M.]`
-- After Period selected: `[Botax Accounting] → [Babak M.] → [2025 Annual]`
+- After Firm selected: `[Northpeak Accounting]`
+- After Client selected: `[Northpeak Accounting] → [Daniel M.]`
+- After Period selected: `[Northpeak Accounting] → [Daniel M.] → [2025 Annual]`
 
 **Changes from v2:**
 - No large "Back to Home" link

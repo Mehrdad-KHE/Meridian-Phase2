@@ -77,7 +77,7 @@ Implement in this exact order:
 
 ```
 ┌────────────────────────────────────────────────────┐
-│ Botax Accounting → Babak Mohammadhosseini → 2025 Annual │
+│ Northpeak Accounting → Daniel Roberts → 2025 Annual │
 └────────────────────────────────────────────────────┘
 ```
 

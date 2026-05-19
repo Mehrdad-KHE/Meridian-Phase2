@@ -409,7 +409,7 @@ const WorkflowRoadmap: React.FC<WorkflowRoadmapProps> = ({
 ### Context Bar
 
 - **Purpose**: Shows WHICH engagement (firm/client/period)
-- **Shows**: `[Botax Accounting] → [Babak Mohammadhosseini] → [2025 Annual]`
+- **Shows**: `[Northpeak Accounting] → [Daniel Roberts] → [2025 Annual]`
 - **Location**: Below roadmap, above main content
 - **Visible**: Once engagement context established
 - **Color scheme**: Background #1A1F28, text #F9FAFB

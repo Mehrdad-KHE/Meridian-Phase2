@@ -20,7 +20,7 @@ Context bar display-only
 └────────────────────────────────────────────────────────┘
 
 ┌────────────────────────────────────────────────────────┐
-│ [Botax Accounting] → [Babak M.] → [2025 Annual]       │
+│ [Northpeak Accounting] → [Daniel M.] → [2025 Annual]       │
 │  (click to change)    (clickable)   (clickable)        │
 └────────────────────────────────────────────────────────┘
 

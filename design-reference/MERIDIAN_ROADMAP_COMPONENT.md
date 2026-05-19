@@ -240,7 +240,7 @@ Simpler but less visual connection
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┃                        CONTEXT BAR                                  ┃
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
-┃  Botax Accounting  →  Babak Mohammadhosseini  →  2025 Annual       ┃
+┃  Northpeak Accounting  →  Daniel Roberts  →  2025 Annual       ┃
 ┃  #1A1F28 background, #F9FAFB text                                   ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 

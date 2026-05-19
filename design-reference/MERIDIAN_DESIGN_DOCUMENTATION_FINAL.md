@@ -100,7 +100,7 @@ User exported package yesterday, but needs to add 3 more receipts today:
 1. Open Meridian
    ↓
 2. Opening/Welcome Screen shows recent engagement
-   - Click "Botax Accounting → Babak → 2025 Annual" engagement
+   - Click "Northpeak Accounting → Daniel → 2025 Annual" engagement
    ↓
 3. Lands on Export screen (last visited)
    - Sees "Ready to Export" status

@@ -60,7 +60,7 @@ User can:
 **Context Bar (after engagement setup)**
 ```
 ┌────────────────────────────────────────────────────────┐
-│ [Botax Accounting] → [Babak Mohammadhosseini] → [2025 Annual] │
+│ [Northpeak Accounting] → [Daniel Roberts] → [2025 Annual] │
 └────────────────────────────────────────────────────────┘
 ```
 - Each part is **clickable**

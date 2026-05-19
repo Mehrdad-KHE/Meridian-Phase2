@@ -56,7 +56,7 @@ Small: 12px, weight 400
 ┃  Recent Engagements                               ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓    ┃
-┃  ┃ Babak Mohammadhosseini          #1A1F28 ┃    ┃
+┃  ┃ Daniel Roberts          #1A1F28 ┃    ┃
 ┃  ┃ 2025 Annual                      (card)  ┃    ┃
 ┃  ┃ Status: Review 6 items  #F59E0B (amber) ┃    ┃
 ┃  ┃ ┌──────────┐                            ┃    ┃
@@ -111,7 +111,7 @@ Visual Notes:
 ┃  #9CA3AF (muted text)                            ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓    ┃
-┃  ┃ Botax Accounting            #1A1F28     ┃    ┃
+┃  ┃ Northpeak Accounting            #1A1F28     ┃    ┃
 ┃  ┃ Toronto, ON                 (card)      ┃    ┃
 ┃  ┃ ┌──────────────┐                       ┃    ┃
 ┃  ┃ │ Select Firm  │ #3B82F6 (blue)        ┃    ┃
@@ -151,7 +151,7 @@ Visual Notes:
 ┃  [ENGAGEMENT SETUP] #3B82F6 label                ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax Accounting            #1A1F28      ┃  ┃
+┃  ┃ Northpeak Accounting            #1A1F28      ┃  ┃
 ┃  ┃ (context bar with blue left border)      ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
@@ -159,7 +159,7 @@ Visual Notes:
 ┃  #9CA3AF (muted text)                            ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓    ┃
-┃  ┃ Babak Mohammadhosseini      #1A1F28     ┃    ┃
+┃  ┃ Daniel Roberts      #1A1F28     ┃    ┃
 ┃  ┃ Self-employed contractor    (card)      ┃    ┃
 ┃  ┃ ┌───────────────┐                       ┃    ┃
 ┃  ┃ │ Select Client │ #3B82F6 (blue)        ┃    ┃
@@ -199,7 +199,7 @@ Visual Notes:
 ┃  [ENGAGEMENT SETUP] #3B82F6 label                ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax Accounting → Babak Mohammadhosseini ┃  ┃
+┃  ┃ Northpeak Accounting → Daniel Roberts ┃  ┃
 ┃  ┃ (context bar)                #1A1F28      ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
@@ -248,7 +248,7 @@ Visual Notes:
 ┃  [DOCUMENTS] #3B82F6 label                       ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax → Babak M. → 2025 Annual   #1A1F28 ┃  ┃
+┃  ┃ Botax → Daniel M. → 2025 Annual   #1A1F28 ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
 ┃  ┌──────────────────┐  ┌──────────────┐         ┃
@@ -319,7 +319,7 @@ Visual Notes:
 ┃  [PROCESSING] #3B82F6 label                      ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax → Babak M. → 2025 Annual   #1A1F28 ┃  ┃
+┃  ┃ Botax → Daniel M. → 2025 Annual   #1A1F28 ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
 ┃  Processing Documents                             ┃
@@ -390,7 +390,7 @@ Visual Notes:
 ┃  [REVIEW] #3B82F6 label                          ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax → Babak M. → 2025 Annual   #1A1F28 ┃  ┃
+┃  ┃ Botax → Daniel M. → 2025 Annual   #1A1F28 ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
 ┃  6 items need review                              ┃
@@ -479,7 +479,7 @@ Visual Notes:
 ┃  [ACCOUNTANT Q&A] #3B82F6 label                  ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax → Babak M. → 2025 Annual   #1A1F28 ┃  ┃
+┃  ┃ Botax → Daniel M. → 2025 Annual   #1A1F28 ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
 ┃  ┌──────────────────┐                            ┃
@@ -564,7 +564,7 @@ Visual Notes:
 ┃  [EXPORT] #3B82F6 label                          ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax → Babak M. → 2025 Annual   #1A1F28 ┃  ┃
+┃  ┃ Botax → Daniel M. → 2025 Annual   #1A1F28 ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
 ┃  ✓ Ready                                         ┃
@@ -625,7 +625,7 @@ Visual Notes:
 ┃  [EXPORT - NEEDS ATTENTION] #F59E0B label        ┃
 ┃                                                   ┃
 ┃  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┃
-┃  ┃ Botax → Babak M. → 2025 Annual   #1A1F28 ┃  ┃
+┃  ┃ Botax → Daniel M. → 2025 Annual   #1A1F28 ┃  ┃
 ┃  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃
 ┃                                                   ┃
 ┃  ⚠ Needs Attention                               ┃
